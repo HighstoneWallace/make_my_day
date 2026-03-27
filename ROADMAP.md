@@ -146,6 +146,7 @@ MakeMyDay runs on Kubernetes. The web dashboard has an audio player. You can exp
 - [ ] Add HTTPS with Let's Encrypt / cert-manager
 - [ ] Write a proper Helm chart for the Kubernetes deployment
 - [ ] Multi-user support — share MakeMyDay with a friend or partner
+- [ ] Brainstorm more functionality, like news, stock market review and so on
 
 ---
 
