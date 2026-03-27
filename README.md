@@ -1,20 +1,22 @@
-# 🌅 Make my day
+# 🌅 MakeMyDay
 
-> A personal AI morning briefing system — because your day deserves a proper intro.
+> A personal AI morning briefing system with a purpose to assist you and make you day and it's planning easier and more pleasant.
 
-Morgen is a self-hosted daily assistant that wakes up before you do. It reads your Google Calendar, passes your schedule to Claude AI, and delivers a personalized morning briefing via Telegram, a web dashboard, and spoken audio. Built from scratch as a DevOps learning project — touching cloud infrastructure, containers, CI/CD, and Kubernetes.
+MakeMyDay is a self-hosted daily assistant that wakes up before you do. It reads your Google Calendar, your tasks and other various apps, passes your data to Claude AI, and delivers a personalized morning briefing via Telegram, a web dashboard, or spoken audio. Built from scratch as a DevOps learning project. Touching cloud infrastructure, containers, CI/CD, and Kubernetes.
 
 ---
 
 ## What it does
 
-Every morning between 7:30–9:00 AM, Morgen:
+Every morning between 7:00–9:00 AM, MakeMyDay:
 
 1. Fetches your events from Google Calendar
-2. Asks Claude AI to write a personalized, encouraging briefing
-3. Sends it to you via **Telegram**
-4. Displays it on a **web dashboard**
-5. (Phase 5) Reads it aloud via **text-to-speech**
+2. Fetches your tasks or notes from your dedicated apps
+3. Asks Claude AI to write a personalized, encouraging briefing
+4. Depending on the settings:
+   4.1 Sends it to you via **Telegram**
+   4.2 Displays it on a **web dashboard**
+   4.3 Reads it aloud via **text-to-speech**
 
 If you have tasks scheduled, it tells you what's coming. If the day is clear, it encourages you to get things done anyway.
 
@@ -24,16 +26,16 @@ If you have tasks scheduled, it tells you what's coming. If the day is clear, it
 
 ```
 ┌─────────────────────────────────────────────────────┐
-│                  AWS (Terraform-managed)             │
+│                  AWS (Terraform-managed)            │
 │                                                     │
 │  ┌──────────────┐     ┌──────────────────────────┐  │
-│  │  Scheduler   │────▶│    Python / FastAPI       │  │
-│  │  (cron job)  │     │    backend                │  │
+│  │  Scheduler   │───▶│    Python / FastAPI       │  │
+│  │  (cron job)  │     │    backend               │  │
 │  └──────────────┘     └────────────┬─────────────┘  │
-│                                    │                 │
-│  ┌──────────────┐                  ▼                 │
-│  │Google Calendar│────▶   ┌─────────────────┐       │
-│  │   API        │         │   Claude AI API  │       │
+│                                    │                │
+│  ┌──────────────┐                  ▼                │
+│  │Google Calendar│────▶   ┌─────────────────┐      │
+│  │   API        │         │   Claude AI API  │      │
 │  └──────────────┘         └────────┬────────┘       │
 │                                    │                 │
 │              ┌─────────────────────┼──────────────┐  │
@@ -69,7 +71,7 @@ If you have tasks scheduled, it tells you what's coming. If the day is clear, it
 ## Project structure
 
 ```
-morgen/
+MakeMyDay/
 ├── app/
 │   ├── main.py              # FastAPI entry point
 │   ├── calendar_client.py   # Google Calendar integration
@@ -109,8 +111,8 @@ morgen/
 ### Local setup
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/morgen.git
-cd morgen
+git clone https://github.com/YOUR_USERNAME/make_my_day.git
+cd make_my_day
 
 python -m venv venv
 source venv/bin/activate      # Windows: venv\Scripts\activate
