@@ -1,4 +1,4 @@
-# 🌅 Morgen
+# 🌅 Make my day
 
 > A personal AI morning briefing system — because your day deserves a proper intro.
 
