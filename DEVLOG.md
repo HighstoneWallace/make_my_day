@@ -20,11 +20,11 @@ This file is your progress proof and your future portfolio story.
 
 ## Log
 
-### 2026-MM-DD — Project kickoff
+### 27.03.2026 — Project kickoff
 **Time spent:** 1 hour
-**What I did:** Created the repo, wrote README.md and ROADMAP.md, set up project structure.
+**What I did:** Created the repo, wrote README.md and ROADMAP.md, set up project structure. Used Claude AI for assistance. Set up the environent in VSC
 **What broke:** Nothing yet.
 **What I fixed:** N/A
-**Next session goal:** Set up Google Cloud project and get Calendar API credentials working locally.
+**Next session goal:** Study the plan and start with the phase 1.
 
 ---
