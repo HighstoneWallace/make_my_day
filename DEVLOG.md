@@ -34,7 +34,13 @@ This file is your progress proof and your future portfolio story.
 **What broke:** Too early to break anything.
 **What I fixed:** Too early to fix.
 **Next session goal:** briefing.py with Anthropic API key to get a morning briefing
-```
 
 
----
+### 31.03.2026
+**Time spent:** 1 hour
+**What I did:** Created briefing.py and main.py. Bought credits for API calls (5 USD). Tested main.py with some random entries in my calendar -> works for now, pretty simple and dry, but good for the first attempt without any tuning.
+Replaced script in main with FastAPI-Server, installed packages in my venv and recorded them into requirements.txt again.
+Replaced the get_briefing code with the first output hardcoded to avoid any unnecessary API calls and tokens waste.
+**What broke:** Nothing
+**What I fixed:** import from app-module didnt work -> added init and call the main script with "-m" parameter
+**Next session goal:** Docker
