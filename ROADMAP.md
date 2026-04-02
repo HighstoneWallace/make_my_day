@@ -10,7 +10,7 @@ Check off tasks as you complete them. Open a GitHub Issue for each phase before 
 **Duration:** Weeks 1–3 (~7–10h/week)
 
 ### Tasks
-- [ ] Set up Google Cloud project and enable Calendar API
+- [x] Set up Google Cloud project and enable Calendar API
 - [ ] Obtain OAuth2 credentials and authenticate locally
 - [ ] Write `calendar_client.py` — fetch today's events
 - [ ] Obtain Anthropic API key
