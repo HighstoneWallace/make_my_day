@@ -52,3 +52,10 @@ Replaced the get_briefing code with the first output hardcoded to avoid any unne
 **What broke:** Forgot how to set up github account
 **What I fixed:** Created ssh-key on ec2 machine and added it to github account
 **Next session goal:** Cronjob and Terraform, maybe extend the functionality already
+
+### 02.04.2026
+**Time spent:** 0.5 hours
+**What I did:** Created docker-compose, set-up ssh, updated roadmap and started looking into terraform
+**What broke:** Accidentally changed the roadmap file before pulling from the remote
+**What I fixed:** Merged the versions with git pull --rebase origin main
+**Next session goal:** Cronjob and Terraform, maybe extend the functionality already
