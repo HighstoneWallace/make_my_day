@@ -11,14 +11,14 @@ Check off tasks as you complete them. Open a GitHub Issue for each phase before 
 
 ### Tasks
 - [x] Set up Google Cloud project and enable Calendar API
-- [ ] Obtain OAuth2 credentials and authenticate locally
-- [ ] Write `calendar_client.py` — fetch today's events
-- [ ] Obtain Anthropic API key
-- [ ] Write `briefing.py` — send calendar events to Claude, receive briefing text
-- [ ] Wire everything together in `main.py` — run script, see output in terminal
-- [ ] Set up `.env` file for secrets (never commit this)
-- [ ] Create `requirements.txt`
-- [ ] Write first entry in `DEVLOG.md`
+- [x] Obtain OAuth2 credentials and authenticate locally
+- [x] Write `calendar_client.py` — fetch today's events
+- [x] Obtain Anthropic API key
+- [x] Write `briefing.py` — send calendar events to Claude, receive briefing text
+- [x] Wire everything together in `main.py` — run script, see output in terminal
+- [x] Set up `.env` file for secrets (never commit this)
+- [x] Create `requirements.txt`
+- [x] Write first entry in `DEVLOG.md`
 
 ### Deliverable
 Running `python app/main.py` prints a personalized morning briefing to the terminal.
@@ -36,17 +36,17 @@ Running `python app/main.py` prints a personalized morning briefing to the termi
 **Duration:** Weeks 4–6
 
 ### Tasks
-- [ ] Wrap script in FastAPI — add `GET /briefing` endpoint
-- [ ] Write `Dockerfile`
-- [ ] Run app locally with `docker build` + `docker run`
-- [ ] Write `docker-compose.yml` (app + any future services)
-- [ ] Create AWS Free Tier account
-- [ ] Provision EC2 instance manually (t2.micro)
-- [ ] SSH into instance, install Docker, deploy container
-- [ ] Configure security group (open port 8000)
-- [ ] Create Telegram bot via @BotFather
-- [ ] Write `telegram_bot.py` — send briefing message on `/briefing` endpoint call
-- [ ] Add cron job on EC2 to call the endpoint every morning at 8:00 AM
+- [x] Wrap script in FastAPI — add `GET /briefing` endpoint
+- [x] Write `Dockerfile`
+- [x] Run app locally with `docker build` + `docker run`
+- [x] Write `docker-compose.yml` (app + any future services)
+- [x] Create AWS Free Tier account
+- [x] Provision EC2 instance manually (t2.micro)
+- [x] SSH into instance, install Docker, deploy container
+- [x] Configure security group (open port 8000)
+- [x] Create Telegram bot via @BotFather
+- [x] Write `telegram_bot.py` — send briefing message on `/briefing` endpoint call
+- [x] Add cron job on EC2 to call the endpoint every morning at 8:00 AM
 
 ### Deliverable
 Every morning at 8:00 AM, MakeMyDay sends you a Telegram message with your day's briefing.
