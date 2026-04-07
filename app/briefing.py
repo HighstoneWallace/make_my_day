@@ -1,6 +1,7 @@
 import anthropic
 import os
 from dotenv import load_dotenv
+from app.config import load_config
 
 load_dotenv()
 
@@ -19,7 +20,8 @@ def format_events(events):
 
 def generate_briefing(events):
     '''
-    client = anthropic.Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
+    config = load_config()
+    client = anthropic.Anthropic(api_key=config["anthropic_api_key"])
     
     events_text = format_events(events)
     

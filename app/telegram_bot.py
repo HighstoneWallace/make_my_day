@@ -1,11 +1,12 @@
 import os
 import httpx
 from dotenv import load_dotenv
+from app.config import load_config
 
 load_dotenv()
-
-TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
-TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
+config = load_config()
+TELEGRAM_BOT_TOKEN = config["telegram_bot_token"]
+TELEGRAM_CHAT_ID = config["telegram_chat_id"]
 
 def send_briefing(briefing_text: str):
     url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage"
