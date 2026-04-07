@@ -64,15 +64,15 @@ Every morning at 8:00 AM, MakeMyDay sends you a Telegram message with your day's
 **Duration:** Weeks 7–9
 
 ### Tasks
-- [ ] Install Terraform locally
-- [ ] Write `infra/main.tf` — EC2 instance, security group, key pair
-- [ ] Write `infra/variables.tf` and `infra/outputs.tf`
-- [ ] Set up S3 bucket for Terraform remote state
-- [ ] Configure Terraform backend (S3 + DynamoDB for locking)
-- [ ] Run `terraform destroy` on manually-created infra
-- [ ] Run `terraform apply` — infra rebuilt from code
-- [ ] Set up IAM role for EC2 (least privilege)
-- [ ] Store secrets in AWS SSM Parameter Store (not .env on server)
+- [x] Install Terraform locally
+- [x] Write `infra/main.tf` — EC2 instance, security group, key pair
+- [x] Write `infra/variables.tf` and `infra/outputs.tf`
+- [x] Set up S3 bucket for Terraform remote state
+- [x] Configure Terraform backend (S3 + DynamoDB for locking)
+- [x] Run `terraform destroy` on manually-created infra
+- [x] Run `terraform apply` — infra rebuilt from code
+- [x] Set up IAM role for EC2 (least privilege)
+- [x] Store secrets in AWS SSM Parameter Store (not .env on server)
 
 ### Deliverable
 `terraform apply` provisions the entire MakeMyDay infrastructure from zero. `terraform destroy` tears it down cleanly. No manual clicking in AWS console.

@@ -59,3 +59,10 @@ Replaced the get_briefing code with the first output hardcoded to avoid any unne
 **What broke:** Accidentally changed the roadmap file before pulling from the remote
 **What I fixed:** Merged the versions with git pull --rebase origin main
 **Next session goal:** Cronjob and Terraform, maybe extend the functionality already
+
+### 07.04.2026
+**Time spent:** 3 hours
+**What I did:** installed terraform, created tf-files, initiated the infrastracture with it. Then deleted it and created it again with backend in aws-s3 storage (terraform state file to keep it safe and not in repository). Created S3 storage with DynamoDB, where the state file is stored. Created SSM-Parameters, from where my EC2 instance will get the secrets. Created a role in IAM and assigned it to EC2 instance. With this role, the secrets are available with read-only access. Updated code to use SSM instead of local files.
+**What broke:** Terraform installed on ec2 instance. Then locally but with different docker-repo
+**What I fixed:** Deleted it and installed locally and changed the main.tf to install the correct version of docker
+**Next session goal:** Web dashboard
