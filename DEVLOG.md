@@ -66,3 +66,10 @@ Replaced the get_briefing code with the first output hardcoded to avoid any unne
 **What broke:** Terraform installed on ec2 instance. Then locally but with different docker-repo
 **What I fixed:** Deleted it and installed locally and changed the main.tf to install the correct version of docker
 **Next session goal:** Web dashboard
+
+### 08.04.2026
+**Time spent:** 1 hour
+**What I did:** Wrote tests for briefing.py, set up the testing environment and installed python linter. Ran the tests
+**What broke:** pytest worked with terminal call and not with the right click -> run tests with coverage.
+**What I fixed:** Installed pytest-cov, added .vscode/settings.json
+**Next session goal:** CI/CD for testing, web dashboard
