@@ -1,5 +1,4 @@
 import anthropic
-import os
 from dotenv import load_dotenv
 from app.config import load_config
 
@@ -8,18 +7,16 @@ load_dotenv()
 def format_events(events):
     if not events:
         return "No events scheduled for today."
-    
     lines = []
     for event in events:
         start = event["start"].get("dateTime", event["start"].get("date"))
         summary = event.get("summary", "Untitled event")
         lines.append(f"- {start}: {summary}")
-    
     return "\n".join(lines)
 
 
 def generate_briefing(events):
-    '''
+    
     config = load_config()
     client = anthropic.Anthropic(api_key=config["anthropic_api_key"])
     
@@ -41,10 +38,11 @@ def generate_briefing(events):
     )
 
     return message.content[0].text
+    
     '''
-
     example_briefing = """--- YOUR MORNING BRIEFING ---
-Good morning! ☀️ Here's what your Tuesday looks like: 
-You've got a workshop check to take care of at some point today, so it's worth getting that sorted earlier rather than later to keep the rest of your day flowing smoothly.
-Then this evening you have a Preply lesson with Stefano G. at 5:00 PM — a great chance to invest in your language skills! Right after at 6:30 PM, you have your Vitamin D reminder, so don't forget to take that. It's a nicely balanced day — a task to handle, some learning, and a little self-care. Small, consistent steps are what real progress is made of. You've got this! 💪"""
+    Good morning! ☀️ Here's what your Tuesday looks like: 
+    You've got a workshop check to take care of at some point today, so it's worth getting that sorted earlier rather than later to keep the rest of your day flowing smoothly.
+    Then this evening you have a Preply lesson with Stefano G. at 5:00 PM — a great chance to invest in your language skills! Right after at 6:30 PM, you have your Vitamin D reminder, so don't forget to take that. It's a nicely balanced day — a task to handle, some learning, and a little self-care. Small, consistent steps are what real progress is made of. You've got this! 💪"""
     return example_briefing
+    '''
