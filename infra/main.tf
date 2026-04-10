@@ -56,7 +56,9 @@ resource "aws_instance" "makemyday" {
 user_data = <<-EOF
   #!/bin/bash
   apt-get update
-  apt-get install -y ca-certificates curl gnupg
+  apt-get install -y ca-certificates curl gnupg unzip
+  
+  # Docker
   install -m 0755 -d /etc/apt/keyrings
   curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg
   chmod a+r /etc/apt/keyrings/docker.gpg
@@ -66,6 +68,12 @@ user_data = <<-EOF
   systemctl start docker
   systemctl enable docker
   usermod -aG docker ubuntu
+
+  # AWS CLI
+  curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+  unzip awscliv2.zip
+  ./aws/install
+  rm -rf awscliv2.zip aws/
 EOF
 
   tags = {
