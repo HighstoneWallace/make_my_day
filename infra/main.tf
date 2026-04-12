@@ -46,12 +46,18 @@ resource "aws_security_group" "makemyday" {
   }
 }
 
+resource "aws_iam_instance_profile" "makemyday" {
+  name = "makemyday-instance-profile"
+  role = "makemyday-ec2-role"
+}
+
 # EC2 instance
 resource "aws_instance" "makemyday" {
   ami                    = "ami-0084a47cc718c111a" # Ubuntu 24.04 LTS eu-central-1
   instance_type          = var.instance_type
   key_name               = var.key_pair_name
   vpc_security_group_ids = [aws_security_group.makemyday.id]
+  iam_instance_profile   = aws_iam_instance_profile.makemyday.name
 
 user_data = <<-EOF
   #!/bin/bash
