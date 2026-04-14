@@ -73,3 +73,10 @@ Replaced the get_briefing code with the first output hardcoded to avoid any unne
 **What broke:** pytest worked with terminal call and not with the right click -> run tests with coverage.
 **What I fixed:** Installed pytest-cov, added .vscode/settings.json
 **Next session goal:** CI/CD for testing, web dashboard
+
+### 12.04.2026
+**Time spent:** 1 hour
+**What I did:** Fixing Github Actions problems
+**What broke:** deploy workflow did not work properly
+**What I fixed:** IAM role was not added to ec2 instance
+**Next session goal:** Web dashboard
