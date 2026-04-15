@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+  workflow_dispatch:
 
 jobs:
   test:
@@ -62,10 +63,12 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           envs: IMAGE
           script: |
-            aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin ${{ steps.login-ecr.outputs.registry }}
+            aws ecr get-login-password --region eu-central-1 | \
+              docker login --username AWS --password-stdin ${{ steps.login-ecr.outputs.registry }}
             docker pull $IMAGE
             docker stop makemyday || true
             docker rm makemyday || true
+            [ -d ~/token.json ] && sudo rm -rf ~/token.json || true
             docker run -d -p 8000:8000 \
               --name makemyday \
               -e ENV=production \
