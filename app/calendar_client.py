@@ -5,7 +5,10 @@ from google.auth.transport.requests import Request
 from googleapiclient.discovery import build
 import os
 
-SCOPES = ["https://www.googleapis.com/auth/calendar.readonly"]
+SCOPES = [
+    "https://www.googleapis.com/auth/calendar.readonly",
+    "https://www.googleapis.com/auth/tasks.readonly"
+]
 
 def get_credentials():
     creds = None
@@ -44,6 +47,31 @@ def get_todays_events():
 
     events = result.get("items", [])
     return events
+
+def get_tasks():
+    creds = get_credentials()
+    service = build("tasks", "v1", credentials=creds)
+
+    tasklists = service.tasklists().list().execute()
+    all_tasks = []
+
+    for tasklist in tasklists.get("items", []):
+        tasks = service.tasks().list(
+            tasklist=tasklist["id"],
+            showCompleted=False,
+            showHidden=False
+        ).execute()
+
+        for task in tasks.get("items", []):
+            all_tasks.append({
+                "title": task.get("title", "Untitled task"),
+                "tasklist": tasklist["title"],
+                "due": task.get("due", None),
+                "notes": task.get("notes", None)
+            })
+
+    return all_tasks
+
 
 if __name__ == "__main__":
     events = get_todays_events()
