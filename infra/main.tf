@@ -80,6 +80,9 @@ user_data = <<-EOF
   unzip awscliv2.zip
   ./aws/install
   rm -rf awscliv2.zip aws/
+
+  echo "0 5 * * * curl -s http://localhost:8000/api/briefing >> /home/ubuntu/briefing.log 2>&1" | crontab -u ubuntu -
+
 EOF
 
   tags = {
