@@ -30,7 +30,9 @@ def format_context(events, tasks):
 
 
 def generate_briefing(events, tasks):
-    client = anthropic.Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
+    config = load_config()
+
+    client = anthropic.Anthropic(api_key=config["anthropic_api_key"])
 
     context = format_context(events, tasks)
 
