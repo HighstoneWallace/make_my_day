@@ -80,3 +80,17 @@ Replaced the get_briefing code with the first output hardcoded to avoid any unne
 **What broke:** deploy workflow did not work properly
 **What I fixed:** IAM role was not added to ec2 instance
 **Next session goal:** Web dashboard
+
+### 19.04.2026
+**Time spent:** 3 hour
+**What I did:** Web dashboard, CI/CD workflows are created
+**What broke:** deploy didnt work as planned
+**What I fixed:** Authentication problems
+**Next session goal:** Cronjob and K8s
+
+### 21.04.2026
+**Time spent:** 3 hours
+**What I did:** Fixing authentication problems with anthropic API, adding cronjob to terraform main script
+**What broke:** Authentication with anthropic API
+**What I fixed:** The code was broken: no load_config was called
+**Next session goal:** Web dashboard

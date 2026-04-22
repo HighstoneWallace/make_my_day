@@ -90,15 +90,15 @@ Every morning at 8:00 AM, MakeMyDay sends you a Telegram message with your day's
 **Duration:** Weeks 10–13
 
 ### Tasks
-- [ ] Write `frontend/index.html` — simple dashboard showing today's briefing
-- [ ] Add `GET /` route in FastAPI to serve the dashboard
-- [ ] Add `GET /api/briefing` JSON endpoint for the frontend to call
-- [ ] Write at least 2 pytest tests in `tests/test_briefing.py`
-- [ ] Create `.github/workflows/deploy.yml`
-- [ ] CI pipeline: run tests → build Docker image → push to ECR
-- [ ] CD pipeline: SSH into EC2, pull new image, restart container
-- [ ] Store secrets (API keys, SSH key) as GitHub Actions secrets
-- [ ] Test the full pipeline: push a commit, watch it deploy
+- [x] Write `frontend/index.html` — simple dashboard showing today's briefing
+- [x] Add `GET /` route in FastAPI to serve the dashboard
+- [x] Add `GET /api/briefing` JSON endpoint for the frontend to call
+- [x] Write at least 2 pytest tests in `tests/test_briefing.py`
+- [x] Create `.github/workflows/deploy.yml`
+- [x] CI pipeline: run tests → build Docker image → push to ECR
+- [x] CD pipeline: SSH into EC2, pull new image, restart container
+- [x] Store secrets (API keys, SSH key) as GitHub Actions secrets
+- [x] Test the full pipeline: push a commit, watch it deploy
 
 ### Deliverable
 Push to `main` → tests run → new version deployed automatically → dashboard updates. Zero manual deployment steps.
