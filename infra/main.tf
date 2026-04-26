@@ -19,7 +19,7 @@ provider "aws" {
   region = var.aws_region
 }
 
-# Security group — controls inbound/outbound traffic
+# Security group to control inbound/outbound traffic
 resource "aws_security_group" "makemyday" {
   name        = "makemyday-sg"
   description = "MakeMyDay application security group"
@@ -50,6 +50,12 @@ resource "aws_iam_instance_profile" "makemyday" {
   name = "makemyday-instance-profile"
   role = "makemyday-ec2-role"
 }
+
+resource "aws_iam_role_policy_attachment" "polly" {
+  role       = "makemyday-ec2-role"
+  policy_arn = "arn:aws:iam::aws:policy/AmazonPollyReadOnlyAccess"
+}
+
 
 # EC2 instance
 resource "aws_instance" "makemyday" {
