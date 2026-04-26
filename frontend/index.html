@@ -85,6 +85,12 @@
         <div class="briefing-text loading" id="briefing">
             Fetching your briefing...
         </div>
+        <div style="margin-top: 24px;">
+            <audio id="audio-player" controls style="width: 100%; display: none;"></audio>
+            <button class="refresh-btn" id="audio-btn" onclick="fetchAudio()" style="background: #333; margin-top: 8px;">
+                Listen to briefing
+            </button>
+        </div>
         <button class="refresh-btn" id="btn" onclick="fetchBriefing()">
             Refresh briefing
         </button>
@@ -117,6 +123,28 @@
         }
 
         fetchBriefing();
+
+        async function fetchAudio() {
+            const btn = document.getElementById('audio-btn');
+            const player = document.getElementById('audio-player');
+
+            btn.disabled = true;
+            btn.textContent = 'Generating audio...';
+
+            try {
+                const res = await fetch('/audio');
+                const blob = await res.blob();
+                const url = URL.createObjectURL(blob);
+                player.src = url;
+                player.style.display = 'block';
+                player.play();
+                btn.textContent = 'Regenerate audio';
+            } catch (err) {
+                btn.textContent = 'Audio failed — try again';
+            } finally {
+                btn.disabled = false;
+            }
+        }
     </script>
 </body>
 </html>
