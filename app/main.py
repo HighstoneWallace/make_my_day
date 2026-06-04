@@ -32,3 +32,7 @@ def get_audio() -> StreamingResponse:
         media_type="audio/mpeg",
         headers={"Content-Disposition": "inline; filename=briefing.mp3"}
     )
+
+@app.get("/health")
+def health() -> dict[str, str]:
+    return {"status": "ok"}
