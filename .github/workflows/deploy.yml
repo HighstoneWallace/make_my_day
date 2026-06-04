@@ -55,20 +55,10 @@ jobs:
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           echo "IMAGE=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_ENV
 
-      - name: Get EC2 host from SSM
-        id: get-host
-        run: |
-          EC2_HOST=$(aws ssm get-parameter \
-            --name "/makemyday/ec2_host" \
-            --region eu-central-1 \
-            --query "Parameter.Value" \
-            --output text)
-          echo "EC2_HOST=$EC2_HOST" >> $GITHUB_ENV
-
       - name: Restore Google credentials
         uses: appleboy/ssh-action@v1
         with:
-          host: ${{ env.EC2_HOST }}
+          host: ${{ secrets.EC2_HOST }}
           username: ubuntu
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
@@ -89,7 +79,7 @@ jobs:
       - name: Deploy to EC2
         uses: appleboy/ssh-action@v1
         with:
-          host: ${{ env.EC2_HOST }}
+          host: ${{ secrets.EC2_HOST }}
           username: ubuntu
           key: ${{ secrets.EC2_SSH_KEY }}
           envs: IMAGE
