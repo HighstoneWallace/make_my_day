@@ -116,11 +116,11 @@ Push to `main` → tests run → new version deployed automatically → dashboar
 **Duration:** Weeks 14–16+
 
 ### Tasks
-- [ ] Write `app/tts.py` — generate audio from briefing text (AWS Polly or Piper TTS)
-- [ ] Add `GET /audio` endpoint — returns MP3 of today's briefing
-- [ ] Add audio player to web dashboard
-- [ ] Set up local Kubernetes cluster with k3s (or use EKS)
-- [ ] Write Kubernetes manifests: `Deployment`, `Service`, `Ingress`
+- [x] Write `app/tts.py` — generate audio from briefing text (AWS Polly or Piper TTS)
+- [x] Add `GET /audio` endpoint — returns MP3 of today's briefing
+- [x] Add audio player to web dashboard
+- [x] Set up local Kubernetes cluster with k3s (or use EKS)
+- [x] Write Kubernetes manifests: `Deployment`, `Service`, `Ingress`
 - [ ] Set resource limits and requests on the pod
 - [ ] Set up a namespace for MakeMyDay
 - [ ] Store secrets as Kubernetes Secrets (not hardcoded)
