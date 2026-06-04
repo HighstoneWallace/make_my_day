@@ -88,6 +88,8 @@ user_data = <<-EOF
   rm -rf awscliv2.zip aws/
 
   echo "0 5 * * * curl -s http://localhost:8000/api/briefing >> /home/ubuntu/briefing.log 2>&1" | crontab -u ubuntu -
+  echo "0 3 * * 0 docker system prune -af >> /var/log/docker-cleanup.log 2>&1" | crontab -u ubuntu -
+
 
 EOF
 
