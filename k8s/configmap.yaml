@@ -5,3 +5,4 @@ metadata:
 data:
   LOG_LEVEL: "INFO"
   APP_ENV: "production"
+  ENV: "production"
