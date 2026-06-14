@@ -96,6 +96,7 @@ jobs:
           username: ubuntu
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
+            export PATH=$PATH:/usr/local/bin
             export KUBECONFIG=/home/ubuntu/.kube/config
             # Wait for k3s to be fully ready
             echo "Waiting for k3s to be ready..."
