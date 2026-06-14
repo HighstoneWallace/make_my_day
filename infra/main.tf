@@ -84,7 +84,11 @@ resource "aws_instance" "makemyday" {
   }
   user_data = <<-EOF
 #!/bin/bash
+set -e
+exec > /var/log/user-data.log 2>&1
+
 apt-get update
+apt-get install -y ca-certificates curl gnupg unzip
 
 # Docker
 install -m 0755 -d /etc/apt/keyrings
@@ -105,11 +109,15 @@ rm -rf awscliv2.zip aws/
 
 # k3s
 curl -sfL https://get.k3s.io | sh -
+sleep 30
 mkdir -p /home/ubuntu/.kube
 cp /etc/rancher/k3s/k3s.yaml /home/ubuntu/.kube/config
 chown ubuntu:ubuntu /home/ubuntu/.kube/config
+chmod 600 /home/ubuntu/.kube/config
 echo 'export KUBECONFIG=/home/ubuntu/.kube/config' >> /home/ubuntu/.bashrc
+
 # Cron jobs
+(crontab -u ubuntu -l 2>/dev/null; echo "0 4 * * 0 /usr/local/bin/k3s crictl rmi --prune >> /var/log/k3s-cleanup.log 2>&1") | crontab -u ubuntu -
 (crontab -u ubuntu -l 2>/dev/null; echo "0 5 * * * curl -s http://localhost/api/briefing >> /home/ubuntu/briefing.log 2>&1") | crontab -u ubuntu -
 (crontab -u ubuntu -l 2>/dev/null; echo "0 3 * * 0 docker system prune -af >> /var/log/docker-cleanup.log 2>&1") | crontab -u ubuntu -
 EOF
