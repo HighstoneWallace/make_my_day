@@ -41,6 +41,10 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: eu-central-1
 
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
       - name: Get EC2 host from SSM
         run: |
           EC2_HOST=$(aws ssm get-parameter \
@@ -49,10 +53,6 @@ jobs:
             --query "Parameter.Value" \
             --output text)
           echo "EC2_HOST=$EC2_HOST" >> $GITHUB_ENV
-
-      - name: Login to Amazon ECR
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v2
 
       - name: Build and push Docker image to ECR
         env:
