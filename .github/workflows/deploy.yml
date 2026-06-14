@@ -6,13 +6,10 @@ on:
       - main
   workflow_dispatch:
 
-concurrency:
-  group: production
-  cancel-in-progress: true
-
 jobs:
   test:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -21,16 +18,15 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-          cache: 'pip'
 
       - name: Install dependencies
-        run: |
+        run: | 
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
       - name: Run tests
         run: pytest tests
-
+  
   deploy:
     needs: test
     runs-on: ubuntu-latest
@@ -44,15 +40,6 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: eu-central-1
-
-      - name: Get EC2 host from SSM
-        run: |
-          EC2_HOST=$(aws ssm get-parameter \
-            --name "/makemyday/ec2_host" \
-            --region eu-central-1 \
-            --query "Parameter.Value" \
-            --output text)
-          echo "EC2_HOST=$EC2_HOST" >> $GITHUB_ENV
 
       - name: Login to Amazon ECR
         id: login-ecr
@@ -71,7 +58,7 @@ jobs:
       - name: Restore Google credentials
         uses: appleboy/ssh-action@v1
         with:
-          host: ${{ env.EC2_HOST }}
+          host: ${{ secrets.EC2_HOST }}
           username: ubuntu
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
@@ -89,49 +76,25 @@ jobs:
               --output text > ~/token.json
             echo "Credentials restored"
 
-      - name: Apply Kubernetes manifests
+      - name: Deploy to EC2
         uses: appleboy/ssh-action@v1
         with:
-          host: ${{ env.EC2_HOST }}
-          username: ubuntu
-          key: ${{ secrets.EC2_SSH_KEY }}
-          script: |
-            export PATH=$PATH:/usr/local/bin
-            export KUBECONFIG=/home/ubuntu/.kube/config
-            # Wait for k3s to be fully ready
-            echo "Waiting for k3s to be ready..."
-            timeout 120 bash -c 'until kubectl get nodes 2>/dev/null | grep -q Ready; do sleep 5; done'
-            echo "k3s is ready"
-
-            if [ -d ~/make_my_day ]; then
-              cd ~/make_my_day && git pull
-            else
-              git clone https://github.com/HighstoneWallace/make_my_day.git ~/make_my_day
-            fi
-            
-            kubectl apply -f ~/make_my_day/k8s/
-
-      - name: Deploy to Kubernetes
-        uses: appleboy/ssh-action@v1
-        with:
-          host: ${{ env.EC2_HOST }}
+          host: ${{ secrets.EC2_HOST }}
           username: ubuntu
           key: ${{ secrets.EC2_SSH_KEY }}
           envs: IMAGE
           script: |
-            export KUBECONFIG=/home/ubuntu/.kube/config
-            # Refresh ECR credentials for Kubernetes
-            kubectl create secret docker-registry ecr-secret \
-              --docker-server=$(aws ecr describe-registry --region eu-central-1 --query registryId --output text).dkr.ecr.eu-central-1.amazonaws.com \
-              --docker-username=AWS \
-              --docker-password=$(aws ecr get-login-password --region eu-central-1) \
-              --namespace makemyday \
-              --dry-run=client -o yaml | kubectl apply -f -
-            # Update the image
-            kubectl set image deployment/makemyday-deployment \
-              makemyday=$IMAGE \
-              --namespace makemyday
-            # Wait for rollout
-            kubectl rollout status deployment/makemyday-deployment \
-              --namespace makemyday \
-              --timeout=120s
+            aws ecr get-login-password --region eu-central-1 | \
+              docker login --username AWS --password-stdin ${{ steps.login-ecr.outputs.registry }}
+            docker pull $IMAGE
+            docker stop makemyday || true
+            docker rm makemyday || true
+            [ -d ~/token.json ] && sudo rm -rf ~/token.json || true
+            [ -d ~/credentials.json ] && sudo rm -rf ~/credentials.json || true
+            docker run -d -p 8000:8000 \
+              --name makemyday \
+              -e ENV=production \
+              -v ~/credentials.json:/app/credentials.json \
+              -v ~/token.json:/app/token.json \
+              --restart unless-stopped \
+              $IMAGE
