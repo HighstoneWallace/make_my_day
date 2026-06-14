@@ -9,3 +9,5 @@ token.json
 *.tfstate
 *.tfstate.backup
 .terraform/
+local_learning
+k8s/secret.yaml
