@@ -1,11 +1,12 @@
-import anthropic
-import os
+from typing import Any, LiteralString
 from dotenv import load_dotenv
 from app.config import load_config
 
+import anthropic
+
 load_dotenv()
 
-def format_context(events, tasks):
+def format_context(events: list, tasks: list) -> LiteralString:
     lines = []
     if events:
         lines.append("Calendar events for today:")
@@ -29,7 +30,10 @@ def format_context(events, tasks):
     return "\n".join(lines)
 
 
-def generate_briefing(events, tasks):
+def generate_briefing(events: list, tasks: list) -> str | Any:
+    '''
+    Generate a morning briefing based on calendar events and tasks.
+    '''
     config = load_config()
 
     client = anthropic.Anthropic(api_key=config["anthropic_api_key"])
@@ -39,9 +43,9 @@ def generate_briefing(events, tasks):
     message = client.messages.create(
         model="claude-sonnet-4-6",
         max_tokens=1024,
-        system="""You are a personal morning assistant. Your job is to give the user 
-        a brief, encouraging morning briefing based on their calendar and tasks. 
-        Be warm but concise. No bullet points — write in natural flowing sentences. 
+        system="""You are a personal morning assistant. Your job is to give the user
+        a brief, encouraging morning briefing based on their calendar and tasks.
+        Be warm but concise. No bullet points — write in natural flowing sentences.
         End with one short motivational thought.""",
         messages=[
             {
