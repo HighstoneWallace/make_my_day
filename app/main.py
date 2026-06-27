@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.responses import HTMLResponse, StreamingResponse
-from app.calendar_client import get_todays_events, get_tasks
+from app.calendar_client import get_todays_events, get_tasks, get_formatted_events
 from app.briefing import generate_briefing
 from app.telegram_bot import send_briefing
 from app.tts import generate_audio
@@ -32,6 +32,14 @@ def get_audio() -> StreamingResponse:
         media_type="audio/mpeg",
         headers={"Content-Disposition": "inline; filename=briefing.mp3"}
     )
+
+@app.get("/api/tasks")
+def get_tasks_json() -> list:
+    return get_tasks()
+
+@app.get("/api/events")
+def get_events_json() -> list:
+    return get_formatted_events()
 
 @app.get("/health")
 def health() -> dict[str, str]:
