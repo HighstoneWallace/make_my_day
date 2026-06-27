@@ -38,13 +38,6 @@ resource "aws_security_group" "makemyday" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  ingress {
-    from_port   = 80
-    to_port     = 80
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
   egress {
     from_port   = 0
     to_port     = 0
@@ -63,10 +56,20 @@ resource "aws_iam_role_policy_attachment" "polly" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonPollyReadOnlyAccess"
 }
 
+resource "aws_iam_role_policy_attachment" "ecr" {
+  role       = "makemyday-ec2-role"
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
+}
+
+resource "aws_iam_role_policy_attachment" "ssm" {
+  role       = "makemyday-ec2-role"
+  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMReadOnlyAccess"
+}
+
 resource "aws_ssm_parameter" "ec2_host" {
   name      = "/makemyday/ec2_host"
   type      = "String"
-  value     = aws_instance.makemyday.public_ip
+  value     = aws_instance.makemyday.public_dns
   overwrite = true
 }
 
@@ -84,9 +87,6 @@ resource "aws_instance" "makemyday" {
   }
   user_data = <<-EOF
 #!/bin/bash
-set -e
-exec > /var/log/user-data.log 2>&1
-
 apt-get update
 apt-get install -y ca-certificates curl gnupg unzip
 
@@ -106,20 +106,6 @@ curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip
 unzip awscliv2.zip
 ./aws/install
 rm -rf awscliv2.zip aws/
-
-# k3s
-curl -sfL https://get.k3s.io | sh -
-sleep 30
-mkdir -p /home/ubuntu/.kube
-cp /etc/rancher/k3s/k3s.yaml /home/ubuntu/.kube/config
-chown ubuntu:ubuntu /home/ubuntu/.kube/config
-chmod 600 /home/ubuntu/.kube/config
-echo 'export KUBECONFIG=/home/ubuntu/.kube/config' >> /home/ubuntu/.bashrc
-
-# Cron jobs
-(crontab -u ubuntu -l 2>/dev/null; echo "0 4 * * 0 /usr/local/bin/k3s crictl rmi --prune >> /var/log/k3s-cleanup.log 2>&1") | crontab -u ubuntu -
-(crontab -u ubuntu -l 2>/dev/null; echo "0 5 * * * curl -s http://localhost/api/briefing >> /home/ubuntu/briefing.log 2>&1") | crontab -u ubuntu -
-(crontab -u ubuntu -l 2>/dev/null; echo "0 3 * * 0 docker system prune -af >> /var/log/docker-cleanup.log 2>&1") | crontab -u ubuntu -
 EOF
 
   tags = {
