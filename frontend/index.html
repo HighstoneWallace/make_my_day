@@ -4,147 +4,1272 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MakeMyDay</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --bg:            #08080f;
+            --surf:          rgba(255,255,255,0.038);
+            --surf-2:        rgba(255,255,255,0.065);
+            --surf-3:        rgba(255,255,255,0.095);
+            --border:        rgba(255,255,255,0.07);
+            --border-2:      rgba(255,255,255,0.12);
+            --accent:        #6366f1;
+            --accent-lt:     #818cf8;
+            --accent-glow:   rgba(99,102,241,0.28);
+            --green:         #10b981;
+            --green-glow:    rgba(16,185,129,0.22);
+            --amber:         #f59e0b;
+            --red:           #ef4444;
+            --red-glow:      rgba(239,68,68,0.2);
+            --text-1:        #f0effe;
+            --text-2:        #9492b4;
+            --text-3:        #46445f;
+            --r:             16px;
+            --r-sm:          10px;
+            --r-xs:          7px;
+        }
+
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background: #f5f5f0;
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text-1);
             min-height: 100vh;
+            padding: 28px 24px 60px;
+            overflow-x: hidden;
+        }
+
+        /* Ambient blobs */
+        body::before, body::after {
+            content: '';
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(140px);
+            pointer-events: none;
+            z-index: 0;
+        }
+        body::before {
+            width: 800px; height: 800px;
+            background: radial-gradient(circle, rgba(99,102,241,0.13) 0%, transparent 70%);
+            top: -300px; right: -180px;
+        }
+        body::after {
+            width: 600px; height: 600px;
+            background: radial-gradient(circle, rgba(16,185,129,0.09) 0%, transparent 70%);
+            bottom: -220px; left: -120px;
+        }
+
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
             display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 24px;
+            flex-direction: column;
+            gap: 16px;
         }
 
-        .card {
-            background: white;
-            border-radius: 16px;
-            padding: 40px;
-            max-width: 640px;
-            width: 100%;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
-        }
-
-        .header {
+        /* ── TOP BAR ─────────────────────────────────────────────────────── */
+        .top-bar {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 32px;
+            padding-bottom: 16px;
         }
 
-        h1 {
-            font-size: 22px;
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            font-size: 15px;
             font-weight: 600;
-            color: #1a1a1a;
+            letter-spacing: -0.3px;
         }
 
-        .date {
-            font-size: 14px;
-            color: #888;
+        .logo-dot {
+            width: 9px; height: 9px;
+            background: var(--accent);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--accent);
+            animation: logo-pulse 3s ease-in-out infinite;
         }
 
-        .briefing-text {
-            font-size: 16px;
-            line-height: 1.7;
-            color: #333;
-            min-height: 120px;
+        @keyframes logo-pulse {
+            0%,100% { box-shadow: 0 0 8px var(--accent); }
+            50%      { box-shadow: 0 0 20px var(--accent-glow); }
         }
 
-        .loading {
-            color: #aaa;
-            font-style: italic;
+        .top-date { font-size: 13px; color: var(--text-3); }
+
+        /* ── HERO ─────────────────────────────────────────────────────────── */
+        .hero {
+            display: flex;
+            align-items: center;
+            gap: 36px;
+            background: var(--surf);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 36px 40px;
+            backdrop-filter: blur(28px);
+            animation: rise 0.45s ease both;
         }
 
-        .error {
-            color: #c0392b;
+        .hero-text { flex: 1; min-width: 0; }
+
+        .hero-greeting {
+            font-size: 34px;
+            font-weight: 700;
+            letter-spacing: -1.2px;
+            line-height: 1.1;
+            margin-bottom: 8px;
+            background: linear-gradient(140deg, #fff 40%, var(--accent-lt));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
-        .refresh-btn {
-            margin-top: 32px;
-            padding: 10px 20px;
-            background: #1a1a1a;
-            color: white;
-            border: none;
+        .hero-sub { font-size: 14px; color: var(--text-2); margin-bottom: 26px; }
+
+        .hero-stats { display: flex; gap: 28px; }
+        .hero-stat  { display: flex; flex-direction: column; gap: 3px; }
+
+        .stat-val {
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: -1px;
+        }
+
+        .stat-lbl {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.9px;
+            color: var(--text-3);
+            font-weight: 500;
+        }
+
+        /* Ring */
+        .ring-wrap { position: relative; width: 116px; height: 116px; flex-shrink: 0; }
+        .ring-svg  { transform: rotate(-90deg); }
+        .ring-track { fill: none; stroke: rgba(255,255,255,0.06); stroke-width: 7; }
+        .ring-fill  {
+            fill: none; stroke: var(--accent);
+            stroke-width: 7; stroke-linecap: round;
+            stroke-dasharray: 301; stroke-dashoffset: 301;
+            transition: stroke-dashoffset 0.9s cubic-bezier(0.34,1.56,0.64,1), stroke 0.4s;
+        }
+        .ring-center {
+            position: absolute; inset: 0;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+        }
+        .ring-num { font-size: 26px; font-weight: 700; letter-spacing: -1.5px; line-height: 1; }
+        .ring-of  { font-size: 11px; color: var(--text-3); margin-top: 2px; }
+
+        /* ── GENERIC CARD ─────────────────────────────────────────────────── */
+        .card {
+            background: var(--surf);
+            border: 1px solid var(--border);
+            border-radius: var(--r);
+            padding: 26px 30px;
+            backdrop-filter: blur(28px);
+        }
+
+        .card-hd {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 18px;
+        }
+
+        .card-title {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-3);
+        }
+
+        .card-meta { font-size: 12px; color: var(--text-3); }
+
+        /* ── TWO COLUMN ───────────────────────────────────────────────────── */
+        .two-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        /* ── BADGES ───────────────────────────────────────────────────────── */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: 0.4px;
+            padding: 2px 8px;
+            border-radius: 20px;
+            white-space: nowrap;
+        }
+
+        .badge-red    { background: rgba(239,68,68,0.16);  color: #f87171; }
+        .badge-amber  { background: rgba(245,158,11,0.16); color: #fbbf24; }
+        .badge-green  { background: rgba(16,185,129,0.16); color: #34d399; }
+        .badge-muted  { background: var(--surf-2);         color: var(--text-3); }
+
+        .badge-live {
+            background: rgba(16,185,129,0.18);
+            color: var(--green);
+            animation: live-fade 0.3s ease;
+        }
+
+        .live-dot {
+            width: 5px; height: 5px;
+            background: var(--green);
+            border-radius: 50%;
+            animation: live-pulse 1.6s ease-in-out infinite;
+        }
+
+        @keyframes live-pulse {
+            0%,100% { opacity: 1; transform: scale(1); }
+            50%      { opacity: 0.4; transform: scale(0.7); }
+        }
+
+        @keyframes live-fade { from { opacity: 0; transform: scale(0.85); } to { opacity: 1; transform: scale(1); } }
+
+        /* ── TASKS CARD ───────────────────────────────────────────────────── */
+        #tasks-card { animation: rise 0.45s 0.05s ease both; }
+
+        .tasks-scroll {
+            max-height: 380px;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: var(--border) transparent;
+        }
+
+        .tl-group { margin-bottom: 18px; }
+        .tl-group:last-child { margin-bottom: 0; }
+
+        .tl-header {
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.9px;
+            color: var(--text-3);
+            padding: 0 0 8px 0;
+            margin-bottom: 2px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .task-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 9px 8px;
+            border-radius: var(--r-xs);
+            transition: background 0.15s;
+            cursor: default;
+        }
+
+        .task-row:hover { background: var(--surf-2); }
+
+        .task-icon {
+            width: 17px; height: 17px;
+            border-radius: 50%;
+            border: 1.5px solid var(--border-2);
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .task-body { flex: 1; min-width: 0; }
+
+        .task-name {
+            font-size: 13.5px;
+            font-weight: 500;
+            color: var(--text-1);
+            line-height: 1.35;
+        }
+
+        .task-notes {
+            font-size: 11.5px;
+            color: var(--text-3);
+            margin-top: 2px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .task-due { flex-shrink: 0; margin-top: 2px; }
+
+        /* ── EVENTS CARD ──────────────────────────────────────────────────── */
+        #events-card { animation: rise 0.45s 0.10s ease both; }
+
+        .allday-strip {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            margin-bottom: 14px;
+            padding-bottom: 14px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .allday-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 10px;
+            border-radius: var(--r-xs);
+            background: var(--surf-2);
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-2);
+        }
+
+        .allday-pip {
+            width: 6px; height: 6px;
+            border-radius: 50%;
+            background: var(--accent);
+            flex-shrink: 0;
+        }
+
+        .events-timeline {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+            max-height: 360px;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: var(--border) transparent;
+        }
+
+        /* Now divider */
+        .now-line {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 4px 0;
+            margin: 4px 0;
+        }
+
+        .now-label {
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.8px;
+            color: var(--green);
+            text-transform: uppercase;
+            white-space: nowrap;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .now-rule {
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(90deg, var(--green), transparent);
+            opacity: 0.5;
+        }
+
+        /* Event row */
+        .ev-row {
+            display: grid;
+            grid-template-columns: 48px 14px 1fr;
+            column-gap: 10px;
+            padding: 3px 0;
+            position: relative;
+        }
+
+        .ev-time {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            color: var(--text-3);
+            text-align: right;
+            padding-top: 7px;
+            line-height: 1;
+            letter-spacing: -0.3px;
+        }
+
+        .ev-spine {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 7px;
+        }
+
+        .ev-dot {
+            width: 7px; height: 7px;
+            border-radius: 50%;
+            background: var(--text-3);
+            flex-shrink: 0;
+        }
+
+        .ev-tail {
+            width: 1px;
+            flex: 1;
+            background: var(--border);
+            margin-top: 4px;
+            margin-bottom: -3px;
+        }
+
+        .ev-block {
+            background: var(--surf-2);
+            border: 1px solid var(--border);
+            border-radius: var(--r-xs);
+            padding: 7px 11px;
+            margin: 3px 0 6px;
+            transition: background 0.15s, border-color 0.15s;
+        }
+
+        .ev-block:hover { background: var(--surf-3); }
+
+        .ev-title-row {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            flex-wrap: wrap;
+        }
+
+        .ev-title {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-1);
+            line-height: 1.3;
+        }
+
+        .ev-meta {
+            font-size: 11px;
+            color: var(--text-3);
+            margin-top: 3px;
+        }
+
+        /* Ongoing state */
+        .ev-row.ongoing .ev-dot {
+            background: var(--green);
+            box-shadow: 0 0 8px var(--green-glow);
+        }
+
+        .ev-row.ongoing .ev-block {
+            border-color: rgba(16,185,129,0.3);
+            background: rgba(16,185,129,0.07);
+        }
+
+        .ev-row.ongoing .ev-time { color: var(--green); }
+
+        /* Past state */
+        .ev-row.past .ev-dot   { background: var(--text-3); opacity: 0.4; }
+        .ev-row.past .ev-block { opacity: 0.45; }
+        .ev-row.past .ev-time  { opacity: 0.45; }
+
+        /* ── BRIEFING CARD ────────────────────────────────────────────────── */
+        #brief-card { animation: rise 0.45s 0.15s ease both; }
+
+        .brief-body {
+            font-size: 15px;
+            line-height: 1.8;
+            color: var(--text-2);
+            min-height: 64px;
+        }
+
+        .brief-body.loading { color: var(--text-3); font-style: italic; }
+
+        .brief-actions { display: flex; gap: 10px; margin-top: 20px; }
+
+        audio {
+            width: 100%;
+            margin-top: 14px;
             border-radius: 8px;
-            font-size: 14px;
-            cursor: pointer;
-            transition: opacity 0.2s;
+            filter: invert(1) hue-rotate(180deg) brightness(0.85);
         }
 
-        .refresh-btn:hover { opacity: 0.8; }
-        .refresh-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+        /* ── HABITS CARD ──────────────────────────────────────────────────── */
+        #habits-card { animation: rise 0.45s 0.20s ease both; }
+
+        .week-row {
+            display: grid;
+            grid-template-columns: 1fr 164px;
+            gap: 16px;
+            align-items: center;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 2px;
+        }
+
+        .week-days { display: flex; gap: 5px; justify-content: flex-end; }
+
+        .wd-lbl {
+            width: 20px;
+            text-align: center;
+            font-size: 9px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            color: var(--text-3);
+        }
+
+        .habit-row {
+            display: grid;
+            grid-template-columns: 1fr 164px;
+            gap: 16px;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .habit-row:last-of-type { border-bottom: none; }
+
+        .habit-left { display: flex; align-items: center; gap: 12px; min-width: 0; }
+
+        .habit-btn {
+            width: 30px; height: 30px;
+            border-radius: 9px;
+            border: 1.5px solid var(--border-2);
+            background: transparent;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-size: 14px;
+            transition: all 0.2s cubic-bezier(0.34,1.56,0.64,1);
+        }
+
+        .habit-btn:hover:not(.done) {
+            border-color: var(--accent);
+            background: rgba(99,102,241,0.1);
+            transform: scale(1.08);
+        }
+
+        .habit-btn.done {
+            background: var(--green);
+            border-color: transparent;
+            box-shadow: 0 0 14px var(--green-glow);
+            animation: pop 0.28s cubic-bezier(0.34,1.56,0.64,1);
+        }
+
+        .habit-info { min-width: 0; }
+
+        .habit-name {
+            font-size: 14px;
+            font-weight: 500;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            transition: color 0.2s;
+        }
+
+        .habit-name.done { text-decoration: line-through; color: var(--text-3); }
+
+        .habit-streak { font-size: 11px; color: var(--text-3); margin-top: 2px; }
+        .habit-streak b { color: var(--amber); }
+
+        .habit-dots { display: flex; gap: 5px; justify-content: flex-end; }
+
+        .dot {
+            width: 20px; height: 20px;
+            border-radius: 6px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--border);
+            transition: all 0.2s;
+            flex-shrink: 0;
+        }
+
+        .dot.done      { background: var(--green); border-color: transparent; box-shadow: 0 0 6px var(--green-glow); }
+        .dot.today     { border-color: var(--accent); border-width: 1.5px; }
+        .dot.today.done { border-color: transparent; }
+
+        /* Add habit */
+        .add-row { margin-top: 14px; display: flex; gap: 8px; }
+
+        .add-btn {
+            width: 100%;
+            padding: 10px;
+            background: transparent;
+            border: 1.5px dashed rgba(255,255,255,0.08);
+            border-radius: var(--r-sm);
+            color: var(--text-3);
+            font-size: 13px;
+            font-family: inherit;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .add-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent-lt);
+            background: rgba(99,102,241,0.08);
+        }
+
+        .add-form { display: none; width: 100%; flex-direction: row; gap: 8px; align-items: center; }
+        .add-form.on { display: flex; }
+
+        .inp {
+            background: var(--surf-2);
+            border: 1px solid var(--border);
+            border-radius: var(--r-sm);
+            padding: 8px 12px;
+            color: var(--text-1);
+            font-size: 14px;
+            font-family: inherit;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .inp:focus { border-color: var(--accent); }
+        .inp::placeholder { color: var(--text-3); }
+        .inp-emoji { width: 52px; text-align: center; font-size: 18px; padding: 6px; }
+        .inp-name  { flex: 1; }
+
+        /* ── BUTTONS ──────────────────────────────────────────────────────── */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 18px;
+            border-radius: var(--r-sm);
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            border: none;
+            font-family: inherit;
+            transition: all 0.18s ease;
+        }
+
+        .btn-accent {
+            background: var(--accent);
+            color: #fff;
+        }
+
+        .btn-accent:hover:not(:disabled) {
+            background: var(--accent-lt);
+            box-shadow: 0 0 22px var(--accent-glow);
+            transform: translateY(-1px);
+        }
+
+        .btn-ghost {
+            background: var(--surf-2);
+            color: var(--text-2);
+            border: 1px solid var(--border);
+        }
+
+        .btn-ghost:hover:not(:disabled) {
+            background: var(--surf-3);
+            color: var(--text-1);
+        }
+
+        .btn:disabled { opacity: 0.38; cursor: not-allowed; }
+
+        /* ── EMPTY / SKELETON STATES ──────────────────────────────────────── */
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 32px 16px;
+            color: var(--text-3);
+            font-size: 13px;
+            text-align: center;
+        }
+
+        .empty-icon { font-size: 28px; opacity: 0.6; }
+
+        .skeleton-line {
+            height: 13px;
+            border-radius: 6px;
+            background: linear-gradient(90deg, var(--surf-2) 25%, var(--surf-3) 50%, var(--surf-2) 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.6s infinite;
+            margin-bottom: 10px;
+        }
+
+        @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+        /* ── ANIMATIONS ───────────────────────────────────────────────────── */
+        @keyframes rise {
+            from { opacity: 0; transform: translateY(10px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pop {
+            0%  { transform: scale(0.75); }
+            60% { transform: scale(1.12); }
+            100%{ transform: scale(1); }
+        }
+
+        /* ── RESPONSIVE ───────────────────────────────────────────────────── */
+        @media (max-width: 720px) {
+            .two-col { grid-template-columns: 1fr; }
+        }
+
+        @media (max-width: 580px) {
+            body { padding: 16px 16px 40px; }
+            .hero { flex-direction: column-reverse; gap: 20px; padding: 26px 22px; align-items: flex-start; }
+            .hero-greeting { font-size: 26px; }
+            .ring-wrap { width: 96px; height: 96px; align-self: center; }
+            .card { padding: 22px 20px; }
+            .week-row, .habit-row { grid-template-columns: 1fr 130px; }
+            .dot { width: 16px; height: 16px; border-radius: 5px; }
+            .wd-lbl { width: 16px; }
+        }
     </style>
 </head>
 <body>
-    <div class="card">
-        <div class="header">
-            <h1>Good morning ☀️</h1>
-            <span class="date" id="date"></span>
+<div class="container">
+
+    <!-- TOP BAR -->
+    <div class="top-bar">
+        <div class="logo">
+            <div class="logo-dot"></div>
+            MakeMyDay
         </div>
-        <div class="briefing-text loading" id="briefing">
-            Fetching your briefing...
-        </div>
-        <div style="margin-top: 24px;">
-            <audio id="audio-player" controls style="width: 100%; display: none;"></audio>
-            <button class="refresh-btn" id="audio-btn" onclick="fetchAudio()" style="background: #333; margin-top: 8px;">
-                Listen to briefing
-            </button>
-        </div>
-        <button class="refresh-btn" id="btn" onclick="fetchBriefing()">
-            Refresh briefing
-        </button>
+        <span class="top-date" id="top-date"></span>
     </div>
 
-    <script>
-        document.getElementById('date').textContent = new Date().toLocaleDateString('en-GB', {
-            weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
-        });
+    <!-- HERO -->
+    <div class="hero">
+        <div class="hero-text">
+            <div class="hero-greeting" id="greeting"></div>
+            <div class="hero-sub" id="hero-sub">Here's your daily overview</div>
+            <div class="hero-stats">
+                <div class="hero-stat">
+                    <div class="stat-val" id="s-done">—</div>
+                    <div class="stat-lbl">Habits done</div>
+                </div>
+                <div class="hero-stat">
+                    <div class="stat-val" id="s-tasks">—</div>
+                    <div class="stat-lbl">Open tasks</div>
+                </div>
+                <div class="hero-stat">
+                    <div class="stat-val" id="s-events">—</div>
+                    <div class="stat-lbl">Events today</div>
+                </div>
+            </div>
+        </div>
+        <div class="ring-wrap">
+            <svg class="ring-svg" width="116" height="116" viewBox="0 0 116 116">
+                <circle class="ring-track" cx="58" cy="58" r="48"/>
+                <circle class="ring-fill" id="ring" cx="58" cy="58" r="48"/>
+            </svg>
+            <div class="ring-center">
+                <div class="ring-num" id="ring-num">0</div>
+                <div class="ring-of"  id="ring-of">/ 0</div>
+            </div>
+        </div>
+    </div>
 
-        async function fetchBriefing() {
-            const el = document.getElementById('briefing');
-            const btn = document.getElementById('btn');
+    <!-- TASKS + EVENTS -->
+    <div class="two-col">
 
-            el.className = 'briefing-text loading';
-            el.textContent = 'Fetching your briefing...';
-            btn.disabled = true;
+        <!-- TASKS -->
+        <div class="card" id="tasks-card">
+            <div class="card-hd">
+                <span class="card-title">Tasks</span>
+                <span class="card-meta" id="tasks-meta"></span>
+            </div>
+            <div class="tasks-scroll" id="tasks-body">
+                <div class="skeleton-line" style="width:70%"></div>
+                <div class="skeleton-line" style="width:55%"></div>
+                <div class="skeleton-line" style="width:80%"></div>
+                <div class="skeleton-line" style="width:40%"></div>
+            </div>
+        </div>
 
-            try {
-                const res = await fetch('/api/briefing');
-                const data = await res.json();
-                el.className = 'briefing-text';
-                el.textContent = data.briefing;
-            } catch (err) {
-                el.className = 'briefing-text error';
-                el.textContent = 'Something went wrong. Try refreshing.';
-            } finally {
-                btn.disabled = false;
-            }
+        <!-- EVENTS -->
+        <div class="card" id="events-card">
+            <div class="card-hd">
+                <span class="card-title">Today's Schedule</span>
+                <span class="card-meta" id="events-meta"></span>
+            </div>
+            <div id="events-body">
+                <div class="skeleton-line" style="width:65%"></div>
+                <div class="skeleton-line" style="width:50%"></div>
+                <div class="skeleton-line" style="width:75%"></div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- BRIEFING -->
+    <div class="card" id="brief-card">
+        <div class="card-hd">
+            <span class="card-title">Daily Briefing</span>
+            <span class="card-meta" id="brief-time"></span>
+        </div>
+        <div class="brief-body loading" id="briefing">Generating your briefing…</div>
+        <audio id="audio-player" controls style="display:none;"></audio>
+        <div class="brief-actions">
+            <button class="btn btn-accent" id="audio-btn" onclick="fetchAudio()">🎧 Listen</button>
+            <button class="btn btn-ghost"  id="refresh-btn" onclick="fetchBriefing()">↻ Refresh</button>
+        </div>
+    </div>
+
+    <!-- HABITS -->
+    <div class="card" id="habits-card">
+        <div class="card-hd">
+            <span class="card-title">Habits</span>
+            <span class="card-meta">Last 7 days</span>
+        </div>
+        <div class="week-row">
+            <div></div>
+            <div class="week-days" id="week-labels"></div>
+        </div>
+        <div id="habits-list"></div>
+        <div class="add-row">
+            <button class="add-btn" id="add-btn" onclick="openAddForm()">+ Add habit</button>
+            <div class="add-form" id="add-form">
+                <input class="inp inp-emoji" id="new-emoji" value="⭐" maxlength="2" title="Pick an emoji">
+                <input class="inp inp-name"  id="new-name"  placeholder="Habit name…" maxlength="40">
+                <button class="btn btn-accent" onclick="addHabit()">Add</button>
+                <button class="btn btn-ghost"  onclick="closeAddForm()">✕</button>
+            </div>
+        </div>
+    </div>
+
+</div><!-- /.container -->
+
+<script>
+// ═══════════════════════════════════════════════════════════════════════════════
+//  UTILITIES
+// ═══════════════════════════════════════════════════════════════════════════════
+const todayStr = () => new Date().toISOString().slice(0, 10);
+
+function last7() {
+    return Array.from({length: 7}, (_, i) => {
+        const d = new Date();
+        d.setDate(d.getDate() - 6 + i);
+        return d;
+    });
+}
+
+function ds(d) { return d.toISOString().slice(0, 10); }
+
+function fmtTime(iso) {
+    if (!iso || iso.length === 10) return null; // all-day
+    return new Date(iso).toLocaleTimeString('en', {hour: '2-digit', minute: '2-digit', hour12: false});
+}
+
+function eventDuration(start, end) {
+    if (!start || !end || start.length === 10) return null;
+    const m = Math.round((new Date(end) - new Date(start)) / 60000);
+    if (m < 60) return `${m}m`;
+    const h = Math.floor(m / 60), rem = m % 60;
+    return rem ? `${h}h ${rem}m` : `${h}h`;
+}
+
+function eventStatus(start, end) {
+    if (!start || start.length === 10) return 'allday';
+    const now = Date.now();
+    const s = new Date(start).getTime(), e = new Date(end).getTime();
+    if (now >= s && now < e) return 'ongoing';
+    if (now >= e)            return 'past';
+    return 'future';
+}
+
+function dueBadge(dueStr) {
+    if (!dueStr) return '';
+    const due = new Date(dueStr);
+    const now = new Date(); now.setHours(0,0,0,0);
+    due.setHours(0,0,0,0);
+    const diff = Math.round((due - now) / 86400000);
+    if (diff < 0)  return `<span class="badge badge-red">Overdue</span>`;
+    if (diff === 0) return `<span class="badge badge-amber">Today</span>`;
+    if (diff === 1) return `<span class="badge badge-muted">Tomorrow</span>`;
+    return `<span class="badge badge-muted">${due.toLocaleDateString('en', {month:'short', day:'numeric'})}</span>`;
+}
+
+function esc(s) {
+    const d = document.createElement('div');
+    d.textContent = s;
+    return d.innerHTML;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+//  INIT UI
+// ═══════════════════════════════════════════════════════════════════════════════
+function initUI() {
+    const h = new Date().getHours();
+    document.getElementById('greeting').textContent =
+        h < 5  ? 'Good night 🌌' :
+        h < 12 ? 'Good morning ☀️' :
+        h < 17 ? 'Good afternoon 🌤' : 'Good evening 🌙';
+
+    document.getElementById('top-date').textContent =
+        new Date().toLocaleDateString('en-GB', {weekday:'long', year:'numeric', month:'long', day:'numeric'});
+
+    const subs = ['Here\'s your daily overview', 'Ready to make today count?', 'Build momentum, one step at a time'];
+    document.getElementById('hero-sub').textContent = subs[new Date().getDay() % subs.length];
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+//  GOOGLE TASKS
+// ═══════════════════════════════════════════════════════════════════════════════
+async function fetchTasks() {
+    try {
+        const res   = await fetch('/api/tasks');
+        const tasks = await res.json();
+
+        document.getElementById('s-tasks').textContent = tasks.length;
+
+        if (!tasks.length) {
+            document.getElementById('tasks-body').innerHTML =
+                `<div class="empty-state">
+                    <div class="empty-icon">✅</div>
+                    <div>All clear — no open tasks!</div>
+                </div>`;
+            document.getElementById('tasks-meta').textContent = '0 tasks';
+            return;
         }
 
-        fetchBriefing();
-
-        async function fetchAudio() {
-            const btn = document.getElementById('audio-btn');
-            const player = document.getElementById('audio-player');
-
-            btn.disabled = true;
-            btn.textContent = 'Generating audio...';
-
-            try {
-                const res = await fetch('/audio');
-                const blob = await res.blob();
-                const url = URL.createObjectURL(blob);
-                player.src = url;
-                player.style.display = 'block';
-                player.play();
-                btn.textContent = 'Regenerate audio';
-            } catch (err) {
-                btn.textContent = 'Audio failed — try again';
-            } finally {
-                btn.disabled = false;
-            }
+        // Group by tasklist
+        const groups = {};
+        for (const t of tasks) {
+            if (!groups[t.tasklist]) groups[t.tasklist] = [];
+            groups[t.tasklist].push(t);
         }
-    </script>
+
+        // Sort tasks within group: overdue first, then by due date, then no due
+        function taskSort(a, b) {
+            const da = a.due ? new Date(a.due).getTime() : Infinity;
+            const db = b.due ? new Date(b.due).getTime() : Infinity;
+            return da - db;
+        }
+
+        let html = '';
+        for (const [list, items] of Object.entries(groups)) {
+            items.sort(taskSort);
+            html += `<div class="tl-group">
+                <div class="tl-header">${esc(list)}</div>`;
+            for (const t of items) {
+                const badge = dueBadge(t.due);
+                const notes = t.notes
+                    ? `<div class="task-notes">${esc(t.notes.split('\n')[0])}</div>`
+                    : '';
+                html += `
+                <div class="task-row">
+                    <div class="task-icon"></div>
+                    <div class="task-body">
+                        <div class="task-name">${esc(t.title)}</div>
+                        ${notes}
+                    </div>
+                    <div class="task-due">${badge}</div>
+                </div>`;
+            }
+            html += `</div>`;
+        }
+
+        document.getElementById('tasks-body').innerHTML = html;
+        document.getElementById('tasks-meta').textContent = `${tasks.length} task${tasks.length !== 1 ? 's' : ''}`;
+
+    } catch {
+        document.getElementById('tasks-body').innerHTML =
+            `<div class="empty-state">
+                <div class="empty-icon">⚡</div>
+                <div style="color:var(--text-3)">Could not load tasks.<br>Backend may be offline.</div>
+            </div>`;
+        document.getElementById('s-tasks').textContent = '—';
+    }
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+//  CALENDAR EVENTS
+// ═══════════════════════════════════════════════════════════════════════════════
+async function fetchEvents() {
+    try {
+        const res    = await fetch('/api/events');
+        const events = await res.json();
+
+        document.getElementById('s-events').textContent = events.length;
+        document.getElementById('events-meta').textContent =
+            events.length ? `${events.length} event${events.length !== 1 ? 's' : ''}` : '';
+
+        if (!events.length) {
+            document.getElementById('events-body').innerHTML =
+                `<div class="empty-state">
+                    <div class="empty-icon">📭</div>
+                    <div>No events scheduled today</div>
+                </div>`;
+            return;
+        }
+
+        const allDay = events.filter(e => e.all_day);
+        const timed  = events.filter(e => !e.all_day);
+
+        let html = '';
+
+        // All-day strip
+        if (allDay.length) {
+            html += `<div class="allday-strip">`;
+            for (const e of allDay) {
+                html += `<div class="allday-item">
+                    <div class="allday-pip"></div>
+                    <span>${esc(e.title)}</span>
+                    <span class="badge badge-muted" style="margin-left:auto">All day</span>
+                </div>`;
+            }
+            html += `</div>`;
+        }
+
+        // Timed events timeline
+        html += `<div class="events-timeline" id="ev-tl">`;
+
+        let nowInserted = false;
+
+        for (let i = 0; i < timed.length; i++) {
+            const e = timed[i];
+            const status = eventStatus(e.start, e.end);
+            const startFmt = fmtTime(e.start);
+            const dur      = eventDuration(e.start, e.end);
+            const isLast   = i === timed.length - 1;
+
+            // Insert "NOW" divider before first non-past event
+            if (!nowInserted && status !== 'past') {
+                nowInserted = true;
+                if (i > 0) {
+                    html += `<div class="now-line">
+                        <span class="now-label">now</span>
+                        <div class="now-rule"></div>
+                    </div>`;
+                }
+            }
+
+            const liveBadge = status === 'ongoing'
+                ? `<span class="badge badge-live"><span class="live-dot"></span>Live</span>`
+                : '';
+
+            const metaParts = [];
+            if (startFmt) metaParts.push(`${startFmt}${dur ? ' · ' + dur : ''}`);
+            if (e.location) metaParts.push(`📍 ${esc(e.location)}`);
+
+            html += `
+            <div class="ev-row ${status}">
+                <div class="ev-time">${startFmt || ''}</div>
+                <div class="ev-spine">
+                    <div class="ev-dot"></div>
+                    ${!isLast ? '<div class="ev-tail"></div>' : ''}
+                </div>
+                <div>
+                    <div class="ev-block">
+                        <div class="ev-title-row">
+                            <span class="ev-title">${esc(e.title)}</span>
+                            ${liveBadge}
+                        </div>
+                        ${metaParts.length ? `<div class="ev-meta">${metaParts.join(' &nbsp;·&nbsp; ')}</div>` : ''}
+                    </div>
+                </div>
+            </div>`;
+        }
+
+        // If all events are in the past, show "now" at the end
+        if (!nowInserted) {
+            html += `<div class="now-line" style="margin-top:8px">
+                <span class="now-label">now</span>
+                <div class="now-rule"></div>
+            </div>`;
+        }
+
+        html += `</div>`;
+        document.getElementById('events-body').innerHTML = html;
+
+    } catch {
+        document.getElementById('events-body').innerHTML =
+            `<div class="empty-state">
+                <div class="empty-icon">⚡</div>
+                <div style="color:var(--text-3)">Could not load events.<br>Backend may be offline.</div>
+            </div>`;
+        document.getElementById('s-events').textContent = '—';
+    }
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+//  HABITS (localStorage)
+// ═══════════════════════════════════════════════════════════════════════════════
+const DEFAULT_HABITS = [
+    {id:'h1', name:'Hydration',    emoji:'💧'},
+    {id:'h2', name:'Morning run',  emoji:'🏃'},
+    {id:'h3', name:'Read 30 min',  emoji:'📚'},
+    {id:'h4', name:'Meditate',     emoji:'🧘'},
+    {id:'h5', name:'Sleep 8h',     emoji:'🛌'},
+    {id:'h6', name:'Vitamins',     emoji:'💊'},
+];
+
+function getHabits()   { return JSON.parse(localStorage.getItem('mmd_habits') || JSON.stringify(DEFAULT_HABITS)); }
+function saveHabits(h) { localStorage.setItem('mmd_habits', JSON.stringify(h)); }
+function getLog()      { return JSON.parse(localStorage.getItem('mmd_log') || '{}'); }
+function saveLog(l)    { localStorage.setItem('mmd_log', JSON.stringify(l)); }
+
+function isDone(id, date) { return (getLog()[id] || []).includes(date); }
+
+function toggle(id, date) {
+    const log = getLog();
+    if (!log[id]) log[id] = [];
+    const i = log[id].indexOf(date);
+    if (i > -1) log[id].splice(i, 1);
+    else         log[id].push(date);
+    saveLog(log);
+}
+
+function streak(id) {
+    const dates = getLog()[id] || [];
+    let n = 0;
+    const base = new Date();
+    for (let i = 0; i <= 365; i++) {
+        const d = new Date(base); d.setDate(d.getDate() - i);
+        if (!dates.includes(ds(d))) break;
+        n++;
+    }
+    return n;
+}
+
+function updateRing() {
+    const habits = getHabits();
+    const t      = todayStr();
+    const done   = habits.filter(h => isDone(h.id, t)).length;
+    const total  = habits.length;
+    const pct    = total ? done / total : 0;
+    const C      = 2 * Math.PI * 48;
+
+    const ring = document.getElementById('ring');
+    ring.style.strokeDasharray  = C;
+    ring.style.strokeDashoffset = C * (1 - pct);
+    ring.style.stroke           = pct >= 1 ? 'var(--green)' : 'var(--accent)';
+
+    document.getElementById('ring-num').textContent = done;
+    document.getElementById('ring-of').textContent  = `/ ${total}`;
+    document.getElementById('s-done').textContent   = done;
+}
+
+function renderHabits() {
+    const days   = last7();
+    const t      = todayStr();
+    const habits = getHabits();
+
+    document.getElementById('week-labels').innerHTML = days.map(d =>
+        `<div class="wd-lbl">${d.toLocaleDateString('en', {weekday:'short'}).slice(0,2)}</div>`
+    ).join('');
+
+    document.getElementById('habits-list').innerHTML = habits.map(h => {
+        const done = isDone(h.id, t);
+        const s    = streak(h.id);
+        const streakHtml = s > 1 ? `<b>🔥 ${s}d streak</b>` : s === 1 ? `<b>🌱 Started today</b>` : 'No streak yet';
+        const dots = days.map(d => {
+            const date  = ds(d), id = h.id;
+            const cls   = ['dot',
+                isDone(id, date) ? 'done' : '',
+                date === t       ? 'today' : ''].filter(Boolean).join(' ');
+            return `<div class="${cls}"></div>`;
+        }).join('');
+
+        return `
+        <div class="habit-row">
+            <div class="habit-left">
+                <button class="habit-btn ${done ? 'done' : ''}" onclick="toggleHabit('${h.id}')">
+                    ${done ? '✓' : h.emoji}
+                </button>
+                <div class="habit-info">
+                    <div class="habit-name ${done ? 'done' : ''}">${h.name}</div>
+                    <div class="habit-streak">${streakHtml}</div>
+                </div>
+            </div>
+            <div class="habit-dots">${dots}</div>
+        </div>`;
+    }).join('');
+
+    updateRing();
+}
+
+function toggleHabit(id) { toggle(id, todayStr()); renderHabits(); }
+
+function openAddForm() {
+    document.getElementById('add-btn').style.display = 'none';
+    document.getElementById('add-form').classList.add('on');
+    document.getElementById('new-name').focus();
+}
+
+function closeAddForm() {
+    document.getElementById('add-btn').style.display = '';
+    document.getElementById('add-form').classList.remove('on');
+    document.getElementById('new-name').value  = '';
+    document.getElementById('new-emoji').value = '⭐';
+}
+
+function addHabit() {
+    const name  = document.getElementById('new-name').value.trim();
+    const emoji = document.getElementById('new-emoji').value.trim() || '⭐';
+    if (!name) return;
+    const habits = getHabits();
+    habits.push({id: 'h' + Date.now(), name, emoji});
+    saveHabits(habits);
+    closeAddForm();
+    renderHabits();
+}
+
+document.addEventListener('keydown', e => {
+    if (!document.getElementById('add-form').classList.contains('on')) return;
+    if (e.key === 'Enter')  addHabit();
+    if (e.key === 'Escape') closeAddForm();
+});
+
+// ═══════════════════════════════════════════════════════════════════════════════
+//  BRIEFING
+// ═══════════════════════════════════════════════════════════════════════════════
+async function fetchBriefing() {
+    const el  = document.getElementById('briefing');
+    const btn = document.getElementById('refresh-btn');
+    const ts  = document.getElementById('brief-time');
+
+    el.className = 'brief-body loading';
+    el.textContent = 'Generating your briefing…';
+    btn.disabled = true;
+
+    try {
+        const res  = await fetch('/api/briefing');
+        const data = await res.json();
+        el.className = 'brief-body';
+        el.innerHTML = esc(data.briefing).replace(/\n/g, '<br>');
+        ts.textContent = new Date().toLocaleTimeString('en', {hour:'2-digit', minute:'2-digit'});
+    } catch {
+        el.className = 'brief-body';
+        el.innerHTML = `<em style="color:var(--text-3)">Backend offline — briefing unavailable.</em><br><br>
+            Focus on your schedule above and check off your habits below.`;
+        ts.textContent = '';
+    } finally {
+        btn.disabled = false;
+    }
+}
+
+async function fetchAudio() {
+    const btn    = document.getElementById('audio-btn');
+    const player = document.getElementById('audio-player');
+
+    btn.disabled = true;
+    btn.textContent = '⏳ Generating…';
+
+    try {
+        const res  = await fetch('/audio');
+        const blob = await res.blob();
+        player.src = URL.createObjectURL(blob);
+        player.style.display = 'block';
+        player.play();
+        btn.innerHTML = '🎧 Regenerate';
+    } catch {
+        btn.innerHTML = '🎧 Listen';
+    } finally {
+        btn.disabled = false;
+    }
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+//  BOOT
+// ═══════════════════════════════════════════════════════════════════════════════
+initUI();
+renderHabits();
+fetchTasks();
+fetchEvents();
+fetchBriefing();
+</script>
 </body>
 </html>
