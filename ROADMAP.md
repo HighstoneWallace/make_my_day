@@ -121,11 +121,11 @@ Push to `main` → tests run → new version deployed automatically → dashboar
 - [x] Add audio player to web dashboard
 - [x] Set up local Kubernetes cluster with k3s (or use EKS)
 - [x] Write Kubernetes manifests: `Deployment`, `Service`, `Ingress`
-- [ ] Set resource limits and requests on the pod
-- [ ] Set up a namespace for MakeMyDay
-- [ ] Store secrets as Kubernetes Secrets (not hardcoded)
-- [ ] Deploy to cluster: `kubectl apply -f k8s/`
-- [ ] Migrate from single EC2 to EKS (optional stretch goal)
+- [x] Set resource limits and requests on the pod
+- [x] Set up a namespace for MakeMyDay
+- [x] Store secrets as Kubernetes Secrets (not hardcoded)
+- [x] Deploy to cluster: `kubectl apply -f k8s/`
+  * k3s has been done locally due to resource problems with e2c instance and to avoid additional costs
 
 ### Deliverable
 MakeMyDay runs on Kubernetes. The web dashboard has an audio player. You can explain to someone why Kubernetes is useful (and when it isn't).
