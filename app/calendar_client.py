@@ -1,14 +1,16 @@
+import os
 import datetime
+
+from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
-from google.auth.transport.requests import Request
 from googleapiclient.discovery import build
-import os
 
 SCOPES = [
     "https://www.googleapis.com/auth/calendar.readonly",
-    "https://www.googleapis.com/auth/tasks.readonly"
+    "https://www.googleapis.com/auth/tasks.readonly",
 ]
+
 
 def get_credentials():
     creds = None
@@ -23,7 +25,7 @@ def get_credentials():
             flow = InstalledAppFlow.from_client_secrets_file("credentials.json", SCOPES)
             creds = flow.run_local_server(port=0)
 
-        with open("token.json", "w") as token:
+        with open("token.json", "w", encoding="utf-8") as token:
             token.write(creds.to_json())
 
     return creds
@@ -37,46 +39,61 @@ def get_todays_events():
     start_of_day = now.replace(hour=0, minute=0, second=0).isoformat() + "Z"
     end_of_day = now.replace(hour=23, minute=59, second=59).isoformat() + "Z"
 
-    result = service.events().list(
+    result = service.events().list(  # pylint: disable=no-member
         calendarId="primary",
         timeMin=start_of_day,
         timeMax=end_of_day,
         singleEvents=True,
-        orderBy="startTime"
+        orderBy="startTime",
     ).execute()
 
-    events = result.get("items", [])
-    return events
+    return result.get("items", [])
+
 
 def get_tasks():
     creds = get_credentials()
     service = build("tasks", "v1", credentials=creds)
 
-    tasklists = service.tasklists().list().execute()
+    tasklists = service.tasklists().list().execute()  # pylint: disable=no-member
     all_tasks = []
 
     for tasklist in tasklists.get("items", []):
-        tasks = service.tasks().list(
+        response = service.tasks().list(  # pylint: disable=no-member
             tasklist=tasklist["id"],
             showCompleted=False,
-            showHidden=False
+            showHidden=False,
         ).execute()
 
-        for task in tasks.get("items", []):
+        for task in response.get("items", []):
             all_tasks.append({
                 "title": task.get("title", "Untitled task"),
                 "tasklist": tasklist["title"],
                 "due": task.get("due", None),
-                "notes": task.get("notes", None)
+                "notes": task.get("notes", None),
             })
 
     return all_tasks
 
 
+def get_formatted_events() -> list[dict]:
+    raw = get_todays_events()
+    result = []
+    for e in raw:
+        all_day = "date" in e["start"] and "dateTime" not in e["start"]
+        result.append({
+            "title": e.get("summary", "Untitled"),
+            "start": e["start"].get("dateTime", e["start"].get("date")),
+            "end": e["end"].get("dateTime", e["end"].get("date")),
+            "location": e.get("location"),
+            "all_day": all_day,
+        })
+    return result
+
+
 if __name__ == "__main__":
-    events = get_todays_events()
-    if not events:
+    today_events = get_todays_events()
+    if not today_events:
         print("No events today")
-    for event in events:
+    for event in today_events:
         start = event["start"].get("dateTime", event["start"].get("date"))
         print(f"{start} — {event['summary']}")
