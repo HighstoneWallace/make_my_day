@@ -127,9 +127,6 @@ Push to `main` → tests run → new version deployed automatically → dashboar
 - [x] Deploy to cluster: `kubectl apply -f k8s/`
   * k3s has been done locally due to resource problems with e2c instance and to avoid additional costs
 
-### Deliverable
-MakeMyDay runs on Kubernetes. The web dashboard has an audio player. You can explain to someone why Kubernetes is useful (and when it isn't).
-
 ### What you'll learn
 - Kubernetes: pods, deployments, services, ingress, namespaces, resource management
 - AWS Polly or open-source TTS
@@ -137,16 +134,16 @@ MakeMyDay runs on Kubernetes. The web dashboard has an audio player. You can exp
 
 ---
 
-## Stretch goals (after Phase 5)
+## Add new functionality
 
-- [ ] Add evening summary — what did you accomplish today?
-- [ ] Add weather to the briefing (OpenWeatherMap API)
+- [ ] Habit tracking: it should be able to track habits, giving the user an option of frequency and how the success is measured
+- [ ] Some budget reminders and tracking is integrated into the app
+- [ ] Investment tracker
+- [ ] News outlet
+- [ ] Make more forcus on the UI: build a good looking web page
 - [ ] Add a `/task` endpoint to create Google Calendar events via Telegram
 - [ ] Set up monitoring with Prometheus + Grafana
 - [ ] Add HTTPS with Let's Encrypt / cert-manager
-- [ ] Write a proper Helm chart for the Kubernetes deployment
-- [ ] Multi-user support — share MakeMyDay with a friend or partner
-- [ ] Brainstorm more functionality, like news, stock market review and so on
 
 ---
 
