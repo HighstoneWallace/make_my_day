@@ -1,46 +1,30 @@
 from fastapi import FastAPI
-from fastapi.responses import HTMLResponse, StreamingResponse
-from app.calendar_client import get_todays_events, get_tasks, get_formatted_events
-from app.briefing import generate_briefing
-from app.telegram_bot import send_briefing
-from app.tts import generate_audio
-import io
+from fastapi.responses import HTMLResponse
+
+from app.briefing.router import router as briefing_router
+from app.habits.router import router as habits_router
+from app.shopping.router import router as shopping_router
+
 
 app = FastAPI()
 
-@app.get("/api/briefing")
-def get_briefing_json() -> dict:
-    events = get_todays_events()
-    tasks = get_tasks()
-    briefing = generate_briefing(events, tasks)
-    send_briefing(briefing)
-    return {"briefing": briefing}
+app.include_router(briefing_router)
+app.include_router(habits_router)
+app.include_router(shopping_router)
 
 @app.get("/", response_class=HTMLResponse)
 def get_dashboard() -> str:
+    """
+    Serve the dashboard HTML page.
+    This endpoint serves the main dashboard page of the application.
+    It reads the HTML content from the 'frontend/index.html' file and returns it as a response.
+    """
     with open("frontend/index.html") as f:
         return f.read()
 
-@app.get("/audio")
-def get_audio() -> StreamingResponse:
-    events = get_todays_events()
-    tasks = get_tasks()
-    briefing = generate_briefing(events, tasks)
-    audio_bytes = generate_audio(briefing)
-    return StreamingResponse(
-        io.BytesIO(audio_bytes),
-        media_type="audio/mpeg",
-        headers={"Content-Disposition": "inline; filename=briefing.mp3"}
-    )
-
-@app.get("/api/tasks")
-def get_tasks_json() -> list:
-    return get_tasks()
-
-@app.get("/api/events")
-def get_events_json() -> list:
-    return get_formatted_events()
-
 @app.get("/health")
 def health() -> dict[str, str]:
+    """
+    Health check endpoint.
+    """
     return {"status": "ok"}

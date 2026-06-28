@@ -1,4 +1,3 @@
-import os
 import httpx
 from dotenv import load_dotenv
 from app.config import load_config
@@ -9,6 +8,9 @@ TELEGRAM_BOT_TOKEN = config["telegram_bot_token"]
 TELEGRAM_CHAT_ID = config["telegram_chat_id"]
 
 def send_briefing(briefing_text: str):
+    """
+    Sends the briefing text to the specified Telegram chat using the Telegram Bot API.
+    """
     url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage"
     payload = {
         "chat_id": TELEGRAM_CHAT_ID,

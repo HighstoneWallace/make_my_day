@@ -11,3 +11,4 @@ token.json
 .terraform/
 local_learning
 k8s/secret.yaml
+.coverage
