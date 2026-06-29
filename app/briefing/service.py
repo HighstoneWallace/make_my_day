@@ -17,11 +17,11 @@ def create_briefing() -> dict:
     Get the briefing as a JSON response, based on the user's calendar events and tasks for today.
     The briefing is generated using the Claude API and sent to the user via Telegram.
     """
-    events = get_todays_events()
-    tasks = get_tasks()
-    briefing = generate_briefing(events, tasks)
-    send_briefing(briefing)
-    return {"briefing": briefing}
+    #events = get_todays_events()
+    #tasks = get_tasks()
+    #briefing = generate_briefing(events, tasks)
+    #send_briefing(briefing)
+    return {"briefing": "briefing text"}  # Placeholder for testing
 
 
 def generate_briefing(events: list, tasks: list) -> str | Any:
