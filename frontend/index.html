@@ -700,6 +700,151 @@
             100%{ transform: scale(1); }
         }
 
+        /* ── SHOPPING CARD ───────────────────────────────────────────────── */
+        #shopping-card { animation: rise 0.45s 0.25s ease both; }
+
+        .shop-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .shop-table th {
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.9px;
+            color: var(--text-3);
+            text-align: left;
+            padding: 0 10px 10px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .shop-table th:last-child { padding-right: 0; }
+
+        .shop-row {
+            border-bottom: 1px solid var(--border);
+            transition: background 0.15s;
+        }
+
+        .shop-row:last-child { border-bottom: none; }
+        .shop-row:hover { background: var(--surf-2); }
+
+        .shop-row td {
+            padding: 10px 10px 10px 0;
+            vertical-align: middle;
+        }
+
+        .shop-row td:last-child { padding-right: 0; }
+
+        .shop-name {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-1);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .shop-name.purchased {
+            text-decoration: line-through;
+            color: var(--text-3);
+        }
+
+        .shop-desc {
+            font-size: 11.5px;
+            color: var(--text-3);
+            margin-top: 2px;
+        }
+
+        .shop-price {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            color: var(--text-2);
+            white-space: nowrap;
+        }
+
+        .shop-link {
+            color: var(--accent-lt);
+            text-decoration: none;
+            font-size: 12px;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            white-space: nowrap;
+        }
+
+        .shop-link:hover { text-decoration: underline; }
+
+        .shop-check {
+            width: 22px; height: 22px;
+            border-radius: 7px;
+            border: 1.5px solid var(--border-2);
+            background: transparent;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-size: 12px;
+            transition: all 0.2s cubic-bezier(0.34,1.56,0.64,1);
+            color: transparent;
+        }
+
+        .shop-check:hover:not(.done) {
+            border-color: var(--green);
+            background: rgba(16,185,129,0.1);
+        }
+
+        .shop-check.done {
+            background: var(--green);
+            border-color: transparent;
+            color: #fff;
+            box-shadow: 0 0 10px var(--green-glow);
+        }
+
+        .shop-del {
+            width: 24px; height: 24px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            color: var(--text-3);
+            font-size: 14px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.15s;
+            opacity: 0;
+        }
+
+        .shop-row:hover .shop-del {
+            opacity: 1;
+        }
+
+        .shop-del:hover {
+            color: var(--red);
+            background: var(--red-glow);
+        }
+
+        .shop-actions-col { width: 60px; text-align: right; }
+
+        .shop-add-form {
+            display: none;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 14px;
+            padding: 14px;
+            background: var(--surf-2);
+            border: 1px solid var(--border);
+            border-radius: var(--r-sm);
+        }
+
+        .shop-add-form.on { display: flex; }
+
+        .shop-form-row { display: flex; gap: 8px; align-items: center; }
+
+        .inp-price { width: 88px; }
+
         /* ── RESPONSIVE ───────────────────────────────────────────────────── */
         @media (max-width: 720px) {
             .two-col { grid-template-columns: 1fr; }
@@ -804,6 +949,37 @@
         <div class="brief-actions">
             <button class="btn btn-accent" id="audio-btn" onclick="fetchAudio()">🎧 Listen</button>
             <button class="btn btn-ghost"  id="refresh-btn" onclick="fetchBriefing()">↻ Refresh</button>
+        </div>
+    </div>
+
+    <!-- SHOPPING -->
+    <div class="card" id="shopping-card">
+        <div class="card-hd">
+            <span class="card-title">Shopping Wishlist</span>
+            <span class="card-meta" id="shopping-meta"></span>
+        </div>
+        <div id="shopping-body">
+            <div class="skeleton-line" style="width:65%"></div>
+            <div class="skeleton-line" style="width:50%"></div>
+        </div>
+        <div class="add-row">
+            <button class="add-btn" id="shop-add-btn" onclick="openShopForm()">+ Add item</button>
+            <div class="shop-add-form" id="shop-add-form">
+                <div class="shop-form-row">
+                    <input class="inp inp-name" id="shop-name" placeholder="Item name…" maxlength="80">
+                </div>
+                <div class="shop-form-row">
+                    <input class="inp inp-name" id="shop-desc" placeholder="Description (optional)" maxlength="200">
+                </div>
+                <div class="shop-form-row">
+                    <input class="inp inp-price" id="shop-price-min" type="number" min="0" step="0.01" placeholder="Min €">
+                    <span style="color:var(--text-3);font-size:13px">–</span>
+                    <input class="inp inp-price" id="shop-price-max" type="number" min="0" step="0.01" placeholder="Max €">
+                    <input class="inp" id="shop-url" placeholder="Link (optional)" style="flex:1">
+                    <button class="btn btn-accent" onclick="addShopItem()">Add</button>
+                    <button class="btn btn-ghost" onclick="closeShopForm()">✕</button>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -1300,6 +1476,169 @@ async function fetchAudio() {
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
+//  SHOPPING
+// ═══════════════════════════════════════════════════════════════════════════════
+let _shopItems = [];
+
+function fmtPrice(min, max) {
+    if (min == null && max == null) return '';
+    if (min != null && max != null) return `€${min}–${max}`;
+    if (min != null) return `from €${min}`;
+    return `up to €${max}`;
+}
+
+function renderShopItems() {
+    const pending   = _shopItems.filter(i => !i.purchased).length;
+    const purchased = _shopItems.filter(i => i.purchased).length;
+    const meta = `${pending} pending${purchased ? ` · ${purchased} bought` : ''}`;
+    document.getElementById('shopping-meta').textContent = _shopItems.length ? meta : '';
+
+    if (!_shopItems.length) {
+        document.getElementById('shopping-body').innerHTML =
+            `<div class="empty-state">
+                <div class="empty-icon">🛍️</div>
+                <div>Your wishlist is empty — add something below!</div>
+            </div>`;
+        return;
+    }
+
+    const rows = _shopItems.map(item => {
+        const price = fmtPrice(item.price_min, item.price_max);
+        const linkHtml = item.url
+            ? `<a class="shop-link" href="${esc(item.url)}" target="_blank" rel="noopener">↗ Link</a>`
+            : '';
+        const descHtml = item.description
+            ? `<div class="shop-desc">${esc(item.description)}</div>`
+            : '';
+        return `
+        <tr class="shop-row" data-id="${item.item_id}">
+            <td style="width:28px">
+                <button class="shop-check ${item.purchased ? 'done' : ''}"
+                        onclick="toggleShopItem('${item.item_id}')"
+                        title="${item.purchased ? 'Mark as pending' : 'Mark as purchased'}">
+                    ${item.purchased ? '✓' : ''}
+                </button>
+            </td>
+            <td>
+                <div class="shop-name ${item.purchased ? 'purchased' : ''}">${esc(item.name)}</div>
+                ${descHtml}
+            </td>
+            <td class="shop-price">${esc(price)}</td>
+            <td>${linkHtml}</td>
+            <td class="shop-actions-col">
+                <button class="shop-del" onclick="deleteShopItem('${item.item_id}')" title="Remove">✕</button>
+            </td>
+        </tr>`;
+    }).join('');
+
+    document.getElementById('shopping-body').innerHTML =
+        `<table class="shop-table">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Item</th>
+                    <th>Price</th>
+                    <th>Link</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>${rows}</tbody>
+        </table>`;
+}
+
+async function fetchShopItems() {
+    try {
+        const res = await fetch('/api/shopping');
+        _shopItems = await res.json();
+        renderShopItems();
+    } catch {
+        document.getElementById('shopping-body').innerHTML =
+            `<div class="empty-state">
+                <div class="empty-icon">⚡</div>
+                <div style="color:var(--text-3)">Could not load shopping list.<br>Backend may be offline.</div>
+            </div>`;
+    }
+}
+
+async function toggleShopItem(id) {
+    const item = _shopItems.find(i => i.item_id === id);
+    if (!item) return;
+    item.purchased = !item.purchased;
+    renderShopItems();
+    try {
+        const res  = await fetch(`/api/shopping/${id}/toggle`, {method: 'POST'});
+        const data = await res.json();
+        item.purchased = data.purchased;
+        renderShopItems();
+    } catch {
+        await fetchShopItems();
+    }
+}
+
+async function deleteShopItem(id) {
+    _shopItems = _shopItems.filter(i => i.item_id !== id);
+    renderShopItems();
+    try {
+        await fetch(`/api/shopping/${id}`, {method: 'DELETE'});
+    } catch {
+        await fetchShopItems();
+    }
+}
+
+function openShopForm() {
+    document.getElementById('shop-add-btn').style.display = 'none';
+    document.getElementById('shop-add-form').classList.add('on');
+    document.getElementById('shop-name').focus();
+}
+
+function closeShopForm() {
+    document.getElementById('shop-add-btn').style.display = '';
+    document.getElementById('shop-add-form').classList.remove('on');
+    ['shop-name','shop-desc','shop-price-min','shop-price-max','shop-url'].forEach(id => {
+        document.getElementById(id).value = '';
+    });
+}
+
+async function addShopItem() {
+    const name = document.getElementById('shop-name').value.trim();
+    if (!name) return;
+    const desc     = document.getElementById('shop-desc').value.trim();
+    const priceMin = document.getElementById('shop-price-min').value;
+    const priceMax = document.getElementById('shop-price-max').value;
+    const url      = document.getElementById('shop-url').value.trim();
+
+    const btn = document.querySelector('#shop-add-form .btn-accent');
+    btn.disabled = true;
+
+    try {
+        const res  = await fetch('/api/shopping', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                name,
+                description: desc,
+                price_min: priceMin !== '' ? parseFloat(priceMin) : null,
+                price_max: priceMax !== '' ? parseFloat(priceMax) : null,
+                url,
+            }),
+        });
+        const item = await res.json();
+        _shopItems.push(item);
+        closeShopForm();
+        renderShopItems();
+    } finally {
+        btn.disabled = false;
+    }
+}
+
+document.addEventListener('keydown', e => {
+    if (document.getElementById('shop-add-form').classList.contains('on')) {
+        if (e.key === 'Enter')  addShopItem();
+        if (e.key === 'Escape') closeShopForm();
+    }
+});
+
+// ═══════════════════════════════════════════════════════════════════════════════
 //  BOOT
 // ═══════════════════════════════════════════════════════════════════════════════
 initUI();
@@ -1307,6 +1646,7 @@ fetchHabits();
 fetchTasks();
 fetchEvents();
 fetchBriefing();
+fetchShopItems();
 </script>
 </body>
 </html>
