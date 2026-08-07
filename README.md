@@ -1,4 +1,4 @@
-# MakeMyDayss
+# MakeMyDays
 
 > A personal AI morning briefing system with a purpose to assist you and make you day and it's planning easier and more pleasant.
 
