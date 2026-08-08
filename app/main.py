@@ -1,12 +1,14 @@
 from fastapi import FastAPI
 from fastapi.responses import HTMLResponse
+from prometheus_fastapi_instrumentator import Instrumentator
 
 from app.briefing.router import router as briefing_router
 from app.habits.router import router as habits_router
 from app.shopping.router import router as shopping_router
 
-
 app = FastAPI()
+
+Instrumentator().instrument(app).expose(app)
 
 app.include_router(briefing_router)
 app.include_router(habits_router)
