@@ -1,8 +1,8 @@
-# 🌅 MakeMyDay
+# MakeMyDays
 
 > A personal AI morning briefing system with a purpose to assist you and make you day and it's planning easier and more pleasant.
 
-MakeMyDay is a self-hosted web-app which is used as a personal storage and assistant in various ways. It reads your Google Calendar and your tasks, passes your data to Claude AI, and delivers a personalized morning briefing via Telegram, a web dashboard, or spoken audio. It has a habit tracker inside the web-app. It stores the long-term shopping items. Built from scratch as a DevOps learning project. Touching cloud infrastructure, containers, CI/CD, and Kubernetes.
+MakeMyDays is a self-hosted web-app which is used as a personal storage and assistant in various ways. It reads your Google Calendar and your tasks, passes your data to Claude AI, and delivers a personalized morning briefing via Telegram, a web dashboard, or spoken audio. It has a habit tracker inside the web-app. It stores the long-term shopping items. Built from scratch as a DevOps learning project. Touching cloud infrastructure, containers, CI/CD, and Kubernetes.
 
 ---
 
@@ -48,7 +48,7 @@ The goal of this project is to create a web dashboard to improve tracking of var
 ## Project structure
 
 ```
-MakeMyDay/
+MakeMyDays/
 ├── app/
 │   ├── main.py              # FastAPI entry point
 │   ├── calendar_client.py   # Google Calendar integration
