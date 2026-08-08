@@ -42,15 +42,6 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
 
-      - name: Get EC2 host from SSM
-        run: |
-          EC2_HOST=$(aws ssm get-parameter \
-            --name "/makemyday/ec2_host" \
-            --region eu-central-1 \
-            --query "Parameter.Value" \
-            --output text)
-          echo "EC2_HOST=$EC2_HOST" >> $GITHUB_ENV
-
       - name: Build and push Docker image to ECR
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
