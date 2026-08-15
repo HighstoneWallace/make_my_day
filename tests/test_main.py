@@ -11,7 +11,7 @@ def test_health_returns_ok():
     assert response.json() == {"status": "ok"}
 
 
-@patch("builtins.open", mock_open(read_data="<html><body>Dashboard</body></html>"))
+@patch("builtins.open", mock_open(read_data=b"<html><body>Dashboard</body></html>"))
 def test_get_dashboard_returns_html():
     from app.main import app
     client = TestClient(app)
