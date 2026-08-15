@@ -1,6 +1,7 @@
 import { NavLink } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { NAV_ITEMS } from '../nav.js'
+import AccountMenu from './AccountMenu.jsx'
 
 function todayLabel() {
   return new Date().toLocaleDateString('en-GB', {
@@ -14,9 +15,8 @@ function todayLabel() {
 export default function Sidebar() {
   return (
     <aside className="hidden md:flex flex-col w-60 shrink-0 h-screen sticky top-0 border-r border-white/[0.06] px-5 py-6">
-      <div className="flex items-center gap-2.5 px-1 mb-8">
-        <span className="w-2.5 h-2.5 rounded-full bg-accent-400 shadow-glow-sm animate-pulseglow" />
-        <span className="text-[15px] font-semibold tracking-tight">MakeMyDay</span>
+      <div className="mb-8">
+        <AccountMenu showChevron />
       </div>
 
       <nav className="flex flex-col gap-1">

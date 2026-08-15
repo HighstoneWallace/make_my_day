@@ -1,4 +1,4 @@
-# MakeMyDay — Roadmap
+# MakeMyDays — Roadmap
 
 A phased build plan. Each phase ends with a real, working deliverable — not just concepts learned.
 Check off tasks as you complete them. Open a GitHub Issue for each phase before starting it.
@@ -6,7 +6,7 @@ Check off tasks as you complete them. Open a GitHub Issue for each phase before 
 ---
 
 ## Phase 1 — Working script
-**Goal:** MakeMyDay runs locally and produces a real AI briefing in the terminal.
+**Goal:** MakeMyDays runs locally and produces a real AI briefing in the terminal.
 **Duration:** Weeks 1–3 (~7–10h/week)
 
 ### Tasks
@@ -32,7 +32,7 @@ Running `python app/main.py` prints a personalized morning briefing to the termi
 ---
 
 ## Phase 2 — Containerize + deploy + Telegram
-**Goal:** MakeMyDay runs in the cloud and messages you on Telegram every morning.
+**Goal:** MakeMyDays runs in the cloud and messages you on Telegram every morning.
 **Duration:** Weeks 4–6
 
 ### Tasks
@@ -49,7 +49,7 @@ Running `python app/main.py` prints a personalized morning briefing to the termi
 - [x] Add cron job on EC2 to call the endpoint every morning at 8:00 AM
 
 ### Deliverable
-Every morning at 8:00 AM, MakeMyDay sends you a Telegram message with your day's briefing.
+Every morning at 8:00 AM, MakeMyDays sends you a Telegram message with your day's briefing.
 
 ### What you'll learn
 - Docker: images, containers, volumes, port mapping
@@ -75,7 +75,7 @@ Every morning at 8:00 AM, MakeMyDay sends you a Telegram message with your day's
 - [x] Store secrets in AWS SSM Parameter Store (not .env on server)
 
 ### Deliverable
-`terraform apply` provisions the entire MakeMyDay infrastructure from zero. `terraform destroy` tears it down cleanly. No manual clicking in AWS console.
+`terraform apply` provisions the entire MakeMyDays infrastructure from zero. `terraform destroy` tears it down cleanly. No manual clicking in AWS console.
 
 ### What you'll learn
 - Terraform: providers, resources, state, modules, remote backends
@@ -112,7 +112,7 @@ Push to `main` → tests run → new version deployed automatically → dashboar
 ---
 
 ## Phase 5 — Kubernetes + text-to-speech
-**Goal:** MakeMyDay runs on Kubernetes and can read your briefing aloud.
+**Goal:** MakeMyDays runs on Kubernetes and can read your briefing aloud.
 **Duration:** Weeks 14–16+
 
 ### Tasks
@@ -122,7 +122,7 @@ Push to `main` → tests run → new version deployed automatically → dashboar
 - [x] Set up local Kubernetes cluster with k3s (or use EKS)
 - [x] Write Kubernetes manifests: `Deployment`, `Service`, `Ingress`
 - [x] Set resource limits and requests on the pod
-- [x] Set up a namespace for MakeMyDay
+- [x] Set up a namespace for MakeMyDays
 - [x] Store secrets as Kubernetes Secrets (not hardcoded)
 - [x] Deploy to cluster: `kubectl apply -f k8s/`
   * k3s has been done locally due to resource problems with e2c instance and to avoid additional costs

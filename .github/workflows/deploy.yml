@@ -1,4 +1,4 @@
-name: Deploy MakeMyDay
+name: Deploy MakeMyDays
 
 on:
   workflow_dispatch:

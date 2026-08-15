@@ -4,7 +4,18 @@ from unittest.mock import MagicMock, patch
 import pytest
 from fastapi.testclient import TestClient
 
+from app.auth.dependencies import get_current_user
 from app.main import app
+
+TEST_USER = {"user_id": "user-1", "email": "test@example.com", "name": "Test", "avatar_url": None, "created_at": "2026-06-01"}
+
+
+@pytest.fixture(autouse=True)
+def _authenticated():
+    app.dependency_overrides[get_current_user] = lambda: TEST_USER
+    yield
+    app.dependency_overrides.pop(get_current_user, None)
+
 
 client = TestClient(app)
 
@@ -13,6 +24,7 @@ client = TestClient(app)
 
 def _make_dynamo_item(
     item_id="abc-123",
+    user_id="user-1",
     name="Headphones",
     description="Noise cancelling",
     price_min=None,
@@ -23,6 +35,7 @@ def _make_dynamo_item(
 ):
     item = {
         "item_id": item_id,
+        "user_id": user_id,
         "name": name,
         "description": description,
         "url": url,
@@ -50,7 +63,7 @@ def _mock_table(items=None, get_item=None):
 def test_list_items_empty(mock_table_fn):
     mock_table_fn.return_value = _mock_table([])
     from app.shopping.service import list_items
-    assert list_items() == []
+    assert list_items("user-1") == []
 
 
 @patch("app.shopping.service._table")
@@ -61,7 +74,7 @@ def test_list_items_returns_sorted_by_created_at(mock_table_fn):
     ]
     mock_table_fn.return_value = _mock_table(items)
     from app.shopping.service import list_items
-    result = list_items()
+    result = list_items("user-1")
     assert result[0]["item_id"] == "a"
     assert result[1]["item_id"] == "b"
 
@@ -71,7 +84,7 @@ def test_list_items_serializes_price(mock_table_fn):
     items = [_make_dynamo_item(price_min=10, price_max=50)]
     mock_table_fn.return_value = _mock_table(items)
     from app.shopping.service import list_items
-    result = list_items()
+    result = list_items("user-1")
     assert result[0]["price_min"] == 10.0
     assert result[0]["price_max"] == 50.0
 
@@ -81,7 +94,7 @@ def test_list_items_no_price_returns_none(mock_table_fn):
     items = [_make_dynamo_item()]
     mock_table_fn.return_value = _mock_table(items)
     from app.shopping.service import list_items
-    result = list_items()
+    result = list_items("user-1")
     assert result[0]["price_min"] is None
     assert result[0]["price_max"] is None
 
@@ -91,10 +104,11 @@ def test_create_item_puts_to_dynamo(mock_table_fn):
     table = _mock_table()
     mock_table_fn.return_value = table
     from app.shopping.service import create_item
-    result = create_item("Keyboard", "Mechanical", 80.0, 150.0, "https://shop.com")
+    result = create_item("user-1", "Keyboard", "Mechanical", 80.0, 150.0, "https://shop.com")
     table.put_item.assert_called_once()
     call_item = table.put_item.call_args[1]["Item"]
     assert call_item["name"] == "Keyboard"
+    assert call_item["user_id"] == "user-1"
     assert call_item["description"] == "Mechanical"
     assert float(call_item["price_min"]) == 80.0
     assert float(call_item["price_max"]) == 150.0
@@ -108,7 +122,7 @@ def test_create_item_without_price(mock_table_fn):
     table = _mock_table()
     mock_table_fn.return_value = table
     from app.shopping.service import create_item
-    result = create_item("Book")
+    result = create_item("user-1", "Book")
     assert result["price_min"] is None
     assert result["price_max"] is None
     call_item = table.put_item.call_args[1]["Item"]
@@ -122,7 +136,7 @@ def test_toggle_purchased_true_to_false(mock_table_fn):
     table = _mock_table(get_item=dynamo_item)
     mock_table_fn.return_value = table
     from app.shopping.service import toggle_purchased
-    result = toggle_purchased("abc-123")
+    result = toggle_purchased("user-1", "abc-123")
     assert result["purchased"] is False
     table.update_item.assert_called_once()
 
@@ -133,7 +147,7 @@ def test_toggle_purchased_false_to_true(mock_table_fn):
     table = _mock_table(get_item=dynamo_item)
     mock_table_fn.return_value = table
     from app.shopping.service import toggle_purchased
-    result = toggle_purchased("abc-123")
+    result = toggle_purchased("user-1", "abc-123")
     assert result["purchased"] is True
 
 
@@ -144,19 +158,46 @@ def test_toggle_purchased_not_found(mock_table_fn):
     mock_table_fn.return_value = table
     from app.shopping.service import toggle_purchased
     with pytest.raises(ValueError, match="not found"):
-        toggle_purchased("missing-id")
+        toggle_purchased("user-1", "missing-id")
+
+
+@patch("app.shopping.service._table")
+def test_toggle_purchased_wrong_owner(mock_table_fn):
+    dynamo_item = _make_dynamo_item(user_id="someone-else")
+    table = _mock_table(get_item=dynamo_item)
+    mock_table_fn.return_value = table
+    from app.shopping.service import toggle_purchased
+    with pytest.raises(ValueError, match="not found"):
+        toggle_purchased("user-1", "abc-123")
 
 
 @patch("app.shopping.service._table")
 def test_delete_item_calls_dynamo(mock_table_fn):
-    table = _mock_table()
+    table = _mock_table(get_item=_make_dynamo_item())
     mock_table_fn.return_value = table
     from app.shopping.service import delete_item
-    delete_item("abc-123")
+    delete_item("user-1", "abc-123")
     table.delete_item.assert_called_once_with(Key={"item_id": "abc-123"})
 
 
+@patch("app.shopping.service._table")
+def test_delete_item_wrong_owner_raises(mock_table_fn):
+    table = _mock_table(get_item=_make_dynamo_item(user_id="someone-else"))
+    mock_table_fn.return_value = table
+    from app.shopping.service import delete_item
+    with pytest.raises(ValueError, match="not found"):
+        delete_item("user-1", "abc-123")
+    table.delete_item.assert_not_called()
+
+
 # ── API / router tests ───────────────────────────────────────────────────────
+
+def test_shopping_requires_auth():
+    app.dependency_overrides.pop(get_current_user, None)
+    res = client.get("/api/shopping")
+    assert res.status_code == 401
+    app.dependency_overrides[get_current_user] = lambda: TEST_USER
+
 
 @patch("app.shopping.service._table")
 def test_get_shopping_returns_list(mock_table_fn):
@@ -230,7 +271,7 @@ def test_toggle_endpoint_not_found(mock_table_fn):
 
 @patch("app.shopping.service._table")
 def test_delete_endpoint_returns_204(mock_table_fn):
-    table = _mock_table()
+    table = _mock_table(get_item=_make_dynamo_item())
     mock_table_fn.return_value = table
     res = client.delete("/api/shopping/abc-123")
     assert res.status_code == 204

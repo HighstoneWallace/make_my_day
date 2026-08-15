@@ -3,8 +3,9 @@ from datetime import date
 from decimal import Decimal
 
 import boto3
+from boto3.dynamodb.conditions import Attr
 
-TABLE_NAME = "makemyday-shopping"
+TABLE_NAME = "makemydays-shopping"
 
 _dynamodb = None
 
@@ -16,8 +17,8 @@ def _table():
     return _dynamodb.Table(TABLE_NAME)
 
 
-def list_items() -> list[dict]:
-    response = _table().scan()
+def list_items(user_id: str) -> list[dict]:
+    response = _table().scan(FilterExpression=Attr("user_id").eq(user_id))
     items = []
     for item in response.get("Items", []):
         items.append(_serialize(item))
@@ -26,6 +27,7 @@ def list_items() -> list[dict]:
 
 
 def create_item(
+    user_id: str,
     name: str,
     description: str = "",
     price_min: float | None = None,
@@ -36,6 +38,7 @@ def create_item(
     created_at = date.today().isoformat()
     record: dict = {
         "item_id": item_id,
+        "user_id": user_id,
         "name": name,
         "description": description,
         "url": url,
@@ -51,11 +54,11 @@ def create_item(
     return _serialize(record)
 
 
-def toggle_purchased(item_id: str) -> dict:
+def toggle_purchased(user_id: str, item_id: str) -> dict:
     table = _table()
     response = table.get_item(Key={"item_id": item_id})
     item = response.get("Item")
-    if not item:
+    if not item or item.get("user_id") != user_id:
         raise ValueError(f"Item {item_id} not found")
 
     new_state = not item.get("purchased", False)
@@ -68,8 +71,12 @@ def toggle_purchased(item_id: str) -> dict:
     return _serialize(item)
 
 
-def delete_item(item_id: str) -> None:
-    _table().delete_item(Key={"item_id": item_id})
+def delete_item(user_id: str, item_id: str) -> None:
+    table = _table()
+    item = table.get_item(Key={"item_id": item_id}).get("Item")
+    if not item or item.get("user_id") != user_id:
+        raise ValueError(f"Item {item_id} not found")
+    table.delete_item(Key={"item_id": item_id})
 
 
 def _serialize(item: dict) -> dict:

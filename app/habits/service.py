@@ -2,8 +2,9 @@ import uuid
 from datetime import date, timedelta
 
 import boto3
+from boto3.dynamodb.conditions import Attr
 
-TABLE_NAME = "makemyday-habits"
+TABLE_NAME = "makemydays-habits"
 
 _dynamodb = None
 
@@ -32,8 +33,8 @@ def _calculate_current_streak(completions: set[str]) -> int:
     return streak
 
 
-def list_habits() -> list[dict]:
-    response = _table().scan()
+def list_habits(user_id: str) -> list[dict]:
+    response = _table().scan(FilterExpression=Attr("user_id").eq(user_id))
     habits = []
     for item in response.get("Items", []):
         completions: set[str] = set(item.get("completions", []))
@@ -52,12 +53,13 @@ def list_habits() -> list[dict]:
     return habits
 
 
-def create_habit(name: str, emoji: str = "⭐", goal_streak: int = 30) -> dict:
+def create_habit(user_id: str, name: str, emoji: str = "⭐", goal_streak: int = 30) -> dict:
     habit_id = str(uuid.uuid4())
     created_at = date.today().isoformat()
     # DynamoDB does not allow empty sets, so omit completions on creation
     _table().put_item(Item={
         "habit_id": habit_id,
+        "user_id": user_id,
         "name": name,
         "emoji": emoji,
         "goal_streak": goal_streak,
@@ -74,11 +76,11 @@ def create_habit(name: str, emoji: str = "⭐", goal_streak: int = 30) -> dict:
     }
 
 
-def toggle_completion(habit_id: str, date_str: str) -> dict:
+def toggle_completion(user_id: str, habit_id: str, date_str: str) -> dict:
     table = _table()
     response = table.get_item(Key={"habit_id": habit_id})
     item = response.get("Item")
-    if not item:
+    if not item or item.get("user_id") != user_id:
         raise ValueError(f"Habit {habit_id} not found")
 
     completions: set[str] = set(item.get("completions", []))
@@ -106,5 +108,9 @@ def toggle_completion(habit_id: str, date_str: str) -> dict:
     }
 
 
-def delete_habit(habit_id: str) -> None:
-    _table().delete_item(Key={"habit_id": habit_id})
+def delete_habit(user_id: str, habit_id: str) -> None:
+    table = _table()
+    item = table.get_item(Key={"habit_id": habit_id}).get("Item")
+    if not item or item.get("user_id") != user_id:
+        raise ValueError(f"Habit {habit_id} not found")
+    table.delete_item(Key={"habit_id": habit_id})

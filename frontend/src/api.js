@@ -3,7 +3,16 @@ async function request(path, options) {
     headers: { 'Content-Type': 'application/json' },
     ...options,
   })
-  if (!res.ok) throw new Error(`${options?.method || 'GET'} ${path} failed: ${res.status}`)
+  if (!res.ok) {
+    let detail = `${options?.method || 'GET'} ${path} failed: ${res.status}`
+    try {
+      const body = await res.json()
+      if (body?.detail) detail = typeof body.detail === 'string' ? body.detail : detail
+    } catch {
+      // response had no JSON body — keep the generic message
+    }
+    throw new Error(detail)
+  }
   if (res.status === 204) return null
   return res.json()
 }
@@ -14,6 +23,16 @@ export const api = {
 
   tasks: () => request('/api/tasks'),
   events: () => request('/api/events'),
+
+  auth: {
+    me: () => request('/api/auth/me'),
+    signup: (email, password, name) =>
+      request('/api/auth/signup', { method: 'POST', body: JSON.stringify({ email, password, name }) }),
+    login: (email, password) =>
+      request('/api/auth/login', { method: 'POST', body: JSON.stringify({ email, password }) }),
+    logout: () => request('/api/auth/logout', { method: 'POST' }),
+    updateProfile: (patch) => request('/api/auth/me', { method: 'PATCH', body: JSON.stringify(patch) }),
+  },
 
   habits: {
     list: () => request('/api/habits'),
