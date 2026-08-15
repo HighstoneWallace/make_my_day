@@ -1,9 +1,10 @@
-from unittest.mock import patch, mock_open
+from unittest.mock import mock_open, patch
 from fastapi.testclient import TestClient
+
+from app.main import app
 
 
 def test_health_returns_ok():
-    from app.main import app
     client = TestClient(app)
     response = client.get("/health")
 
@@ -13,7 +14,6 @@ def test_health_returns_ok():
 
 @patch("builtins.open", mock_open(read_data=b"<html><body>Dashboard</body></html>"))
 def test_get_dashboard_returns_html():
-    from app.main import app
     client = TestClient(app)
     response = client.get("/")
 
