@@ -1,18 +1,20 @@
 # MakeMyDays
 
+**Live:** [makemydays.cc](https://makemydays.cc)
+
 > A personal AI morning briefing system with a purpose to assist you and make you day and it's planning easier and more pleasant.
 
-MakeMyDays is a self-hosted web-app which is used as a personal storage and assistant in various ways. It reads your Google Calendar and your tasks, passes your data to Claude AI, and delivers a personalized morning briefing via Telegram, a web dashboard, or spoken audio. It has a habit tracker inside the web-app. It stores the long-term shopping items. Built from scratch as a DevOps learning project. Touching cloud infrastructure, containers, CI/CD, and Kubernetes.
+MakeMyDays is a self-hosted web-app which is used as a personal assistant and organizer. It covers multiple areas of your life and ensures an easy and intuitive tracking of your tasks, calendars, budget, etc. 
+It can read your Google Calendar entries and the tasks from it, track your habits, organize your budget, keep track of your spendings and your shopping lists.
+Built from scratch as a DevOps learning project. Touching cloud infrastructure, containers, CI/CD, Kubernetes and monitoring.
 
 ---
 
 ## What it does
 
-1. Fetches your events and tasks from Google Calendar
-2. Asks Claude AI to write a personalized, encouraging briefing
-3. Displays the briefing
-4. Stores the shopping list, with an option to add and delete items, add links and prices to them
-5. Contains habit tracker with an option to add and delete habits
+1. WebApp as a central hub for your life
+2. AI functions to help you organize your day
+3. Stores important information for multiple purposes
 
 The goal of this project is to create a web dashboard to improve tracking of various parts of life all in one app. At the same time, to learn DevOps principles and infrastructure.
 
@@ -21,7 +23,16 @@ The goal of this project is to create a web dashboard to improve tracking of var
 ## Architecture
 
 ```
-<placeholder for later, when the planning is done>
+Browser → Cloudflare Tunnel → Raspberry Pi 3B+
+                                    │
+                    ┌───────────────┼───────────────┐
+                    │               │               │
+               FastAPI app     Prometheus      Grafana
+                    │               │               │
+              Google Calendar   node-exporter   Dashboards
+              Anthropic Claude
+              AWS Polly
+              AWS SSM
 ```
 
 ---
@@ -37,7 +48,7 @@ The goal of this project is to create a web dashboard to improve tracking of var
 | Messaging | Telegram Bot API |
 | TTS | AWS Polly (Phase 5) |
 | Container | Docker |
-| Cloud | AWS (EC2 → EKS) [Might be replaced with a home lab with raspberry pi]|
+| Cloud | AWS (EC2 → EKS) [Replaced with a Raspberry Pi 3B+ for cost optimization purposes]|
 | IaC | Terraform |
 | CI/CD | GitHub Actions |
 | Orchestration | Kubernetes (maybe local only) |
@@ -48,29 +59,7 @@ The goal of this project is to create a web dashboard to improve tracking of var
 ## Project structure
 
 ```
-MakeMyDays/
-├── app/
-│   ├── main.py              # FastAPI entry point
-│   ├── calendar_client.py   # Google Calendar integration
-│   ├── briefing.py          # Claude AI briefing generation
-│   ├── telegram_bot.py      # Telegram delivery
-│   └── tts.py               # Text-to-speech (Phase 5)
-├── frontend/
-│   └── index.html           # Web dashboard
-├── infra/
-│   ├── main.tf              # Terraform entry point
-│   ├── variables.tf
-│   └── outputs.tf
-├── .github/
-│   └── workflows/
-│       └── deploy.yml       # CI/CD pipeline
-├── k8s/                     # Kubernetes manifests (Phase 5)
-├── tests/
-│   └── unit-tests
-├── Dockerfile
-├── docker-compose.yml
-├── ROADMAP.md
-└── README.md
+Will be updated soon
 ```
 
 ---
@@ -89,7 +78,7 @@ git clone https://github.com/HighstoneWallace/make_my_day.git
 cd make_my_day
 
 python -m venv venv
-source venv/bin/activate      # Windows: venv\Scripts\activate
+source venv/bin/activate
 pip install -r requirements.txt
 
 cp .env.example .env
@@ -106,10 +95,20 @@ See [ROADMAP.md](./ROADMAP.md) for the full phase-by-phase plan.
 
 ## Why this project exists
 
-I'm a systems engineer (mechatronics background) learning DevOps and modern cloud infrastructure. This project is designed to touch every layer of a real production system: from a Python script all the way to Kubernetes, while building something I'll actually use every day.
+I'm a systems engineer (mechatronics background) learning DevOps and modern cloud infrastructure. This project is designed to touch every layer of a real production system: from a Python script all the way to Kubernetes and monitoring, while building something I'll actually use every day.
 
 ---
 
-## License
+## Key Engineering Decisions
 
+- **Raspberry Pi over EC2** -> migrated from AWS EC2 to a self-hosted Pi 
+  to eliminate ongoing cloud costs while maintaining full functionality
+- **Cloudflare Tunnel** -> provides public HTTPS access without port 
+  forwarding or a static IP, with free SSL termination
+- **SSM Parameter Store** -> all secrets managed in AWS SSM, never stored 
+  on disk or in environment files
+- **Multi-platform Docker builds** -> images built for both amd64 and arm64 
+  so the same ECR image runs on both CI runners and the Pi
+
+## License
 MIT
