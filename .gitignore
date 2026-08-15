@@ -12,3 +12,4 @@ token.json
 local_learning
 k8s/secret.yaml
 .coverage
+frontend/node_modules/

@@ -1,0 +1,88 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --text-1: #f0effe;
+  --text-2: #9a9ab8;
+  --text-3: #55547a;
+  --border: rgba(255, 255, 255, 0.08);
+  --border-2: rgba(255, 255, 255, 0.14);
+  --surf: rgba(255, 255, 255, 0.04);
+  --surf-2: rgba(255, 255, 255, 0.07);
+  --surf-3: rgba(255, 255, 255, 0.1);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body, #root {
+  height: 100%;
+}
+
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background: radial-gradient(ellipse 120% 80% at 20% -10%, rgba(59, 111, 224, 0.16), transparent 60%),
+              radial-gradient(ellipse 100% 70% at 100% 0%, rgba(124, 58, 237, 0.14), transparent 55%),
+              radial-gradient(ellipse 90% 60% at 10% 100%, rgba(59, 111, 224, 0.08), transparent 60%),
+              #07070f;
+  background-attachment: fixed;
+  color: var(--text-1);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.12) transparent;
+}
+
+.glass {
+  background: var(--surf);
+  border: 1px solid var(--border);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+}
+
+.glass-strong {
+  background: var(--surf-2);
+  border: 1px solid var(--border-2);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+}
+
+.text-gradient {
+  background: linear-gradient(135deg, #ffffff 30%, #8fb2ff 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.skeleton-line {
+  height: 13px;
+  border-radius: 6px;
+  background: linear-gradient(90deg, var(--surf-2) 25%, var(--surf-3) 50%, var(--surf-2) 75%);
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.6s infinite;
+}
+
+@keyframes skeleton-shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}

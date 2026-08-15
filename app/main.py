@@ -1,5 +1,8 @@
-from fastapi import FastAPI
-from fastapi.responses import HTMLResponse
+from pathlib import Path
+
+from fastapi import FastAPI, HTTPException
+from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
 from prometheus_fastapi_instrumentator import Instrumentator
 
 from app.briefing.router import router as briefing_router
@@ -14,15 +17,11 @@ app.include_router(briefing_router)
 app.include_router(habits_router)
 app.include_router(shopping_router)
 
-@app.get("/", response_class=HTMLResponse)
-def get_dashboard() -> str:
-    """
-    Serve the dashboard HTML page.
-    This endpoint serves the main dashboard page of the application.
-    It reads the HTML content from the 'frontend/index.html' file and returns it as a response.
-    """
-    with open("frontend/index.html") as f:
-        return f.read()
+FRONTEND_DIST = Path(__file__).resolve().parent.parent / "frontend" / "dist"
+
+if (FRONTEND_DIST / "assets").is_dir():
+    app.mount("/assets", StaticFiles(directory=FRONTEND_DIST / "assets"), name="assets")
+
 
 @app.get("/health")
 def health() -> dict[str, str]:
@@ -30,3 +29,16 @@ def health() -> dict[str, str]:
     Health check endpoint.
     """
     return {"status": "ok"}
+
+
+@app.get("/{full_path:path}")
+def serve_frontend(full_path: str) -> FileResponse:
+    """
+    Serve the React SPA build. Any path not matched by an API route above
+    (e.g. /habits, /shopping) falls back to index.html so client-side
+    routing can take over.
+    """
+    index_file = FRONTEND_DIST / "index.html"
+    if not index_file.is_file():
+        raise HTTPException(status_code=404, detail="Frontend build not found. Run `npm run build` in /frontend.")
+    return FileResponse(index_file)
