@@ -8,6 +8,7 @@ import TasksCalendar from './pages/TasksCalendar.jsx'
 import Habits from './pages/Habits.jsx'
 import Shopping from './pages/Shopping.jsx'
 import Budget from './pages/Budget.jsx'
+import SharedCosts from './pages/SharedCosts.jsx'
 import Notes from './pages/Notes.jsx'
 
 function LandingGate() {
@@ -34,6 +35,7 @@ export default function App() {
                   <Route path="/habits" element={<Habits />} />
                   <Route path="/shopping" element={<Shopping />} />
                   <Route path="/budget" element={<Budget />} />
+                  <Route path="/shared-costs" element={<SharedCosts />} />
                   <Route path="/notes" element={<Notes />} />
                   <Route path="*" element={<Navigate to="/tasks" replace />} />
                 </Routes>

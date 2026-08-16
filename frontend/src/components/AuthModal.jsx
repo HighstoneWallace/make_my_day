@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
 import { Lock, Mail, User, X } from 'lucide-react'
@@ -13,6 +13,14 @@ export default function AuthModal({ open, initialMode = 'login', onClose }) {
   const [submitting, setSubmitting] = useState(false)
   const { login, signup } = useAuth()
   const navigate = useNavigate()
+
+  // The modal instance stays mounted while `open` toggles, so the mode has
+  // to be re-synced from the prop each time it's reopened — otherwise it's
+  // stuck on whatever mode it was first opened with (e.g. "Get started
+  // free" would keep showing the login form after "Log in" was clicked once).
+  useEffect(() => {
+    if (open) setMode(initialMode)
+  }, [open, initialMode])
 
   const reset = () => {
     setEmail('')

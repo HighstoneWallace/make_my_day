@@ -2,6 +2,7 @@ import { NavLink } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { NAV_ITEMS } from '../nav.js'
 import AccountMenu from './AccountMenu.jsx'
+import logo from '../assets/makemydays_logo.svg'
 
 function todayLabel() {
   return new Date().toLocaleDateString('en-GB', {
@@ -15,6 +16,8 @@ function todayLabel() {
 export default function Sidebar() {
   return (
     <aside className="hidden md:flex flex-col w-60 shrink-0 h-screen sticky top-0 border-r border-white/[0.06] px-5 py-6">
+      <img src={logo} alt="MakeMyDays" className="h-6 w-auto mb-6 ml-1" />
+
       <div className="mb-8">
         <AccountMenu showChevron />
       </div>

@@ -10,16 +10,17 @@ import {
   ShoppingBag,
   Sparkles,
   StickyNote,
+  Users,
   Wallet,
 } from 'lucide-react'
 import AuthModal from '../components/AuthModal.jsx'
+import logo from '../assets/makemydays_logo.svg'
 
 function TopBar({ onLogin }) {
   return (
     <header className="grid grid-cols-3 items-center px-5 md:px-8 py-5">
       <div className="flex items-center gap-2.5">
-        <span className="w-2.5 h-2.5 rounded-full bg-accent-400 shadow-glow-sm animate-pulseglow" />
-        <span className="text-[15px] font-semibold tracking-tight">MakeMyDays</span>
+        <img src={logo} alt="MakeMyDays" className="h-6 md:h-7 w-auto" />
       </div>
       <div className="flex justify-center">
         <button
@@ -110,6 +111,32 @@ function MiniBudgetPreview() {
   )
 }
 
+function MiniSharedCostsPreview() {
+  return (
+    <div className="flex flex-col gap-2.5">
+      <div className="flex items-center justify-between text-[12.5px]">
+        <span className="text-[var(--text-2)]">Lake house weekend</span>
+        <span className="text-[11px] text-[var(--text-3)]">4 people</span>
+      </div>
+      {[
+        { name: 'Josh', amount: '+€42.50' },
+        { name: 'Ovo', amount: '-€18.00' },
+        { name: 'Jennifer', amount: '-€24.50' },
+      ].map((b) => (
+        <div key={b.name} className="flex items-center justify-between gap-2">
+          <span className="text-[12.5px] text-[var(--text-2)] truncate">{b.name}</span>
+          <span className={`text-[11px] font-mono shrink-0 ${b.amount.startsWith('-') ? 'text-red-400' : 'text-emerald-400'}`}>
+            {b.amount}
+          </span>
+        </div>
+      ))}
+      <div className="flex items-center gap-1.5 text-[11px] text-accent-400 mt-0.5">
+        <Plus size={11} /> Add expense
+      </div>
+    </div>
+  )
+}
+
 function MiniNotesPreview() {
   return (
     <div className="flex flex-col gap-2">
@@ -127,6 +154,7 @@ const PREVIEWS = [
   { title: 'Habits', desc: 'Streaks, goals, and a 7-day view that keeps you honest', icon: Flame, Preview: MiniHabitsPreview },
   { title: 'Shopping', desc: 'A wishlist for things worth saving up for', icon: ShoppingBag, Preview: MiniShoppingPreview },
   { title: 'Budget', desc: 'Income, expenses, and balance at a glance', icon: Wallet, Preview: MiniBudgetPreview },
+  { title: 'Shared Costs', desc: 'Split group expenses and settle up automatically', icon: Users, Preview: MiniSharedCostsPreview },
   { title: 'Notes', desc: 'Quick notes for the things you don’t want to forget', icon: StickyNote, Preview: MiniNotesPreview },
 ]
 
