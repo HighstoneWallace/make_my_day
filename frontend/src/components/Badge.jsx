@@ -3,7 +3,7 @@ const TONES = {
   amber: 'bg-amber-500/15 text-amber-400',
   green: 'bg-emerald-500/15 text-emerald-400',
   accent: 'bg-accent-500/20 text-accent-400',
-  muted: 'bg-white/[0.06] text-[var(--text-3)]',
+  muted: 'bg-[var(--surf-2)] text-[var(--text-3)]',
 }
 
 export default function Badge({ tone = 'muted', children, dot = false, className = '' }) {

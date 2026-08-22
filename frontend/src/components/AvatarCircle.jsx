@@ -16,7 +16,7 @@ export default function AvatarCircle({ user, size = 32, className = '' }) {
 
   return (
     <div
-      className={`rounded-full flex items-center justify-center shrink-0 font-semibold text-white bg-gradient-to-br from-accent-400 to-purple-500 ${className}`}
+      className={`rounded-full flex items-center justify-center shrink-0 font-semibold text-white bg-emerald-500 ${className}`}
       style={style}
     >
       {initials(user?.name)}

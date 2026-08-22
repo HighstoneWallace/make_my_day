@@ -1,3 +1,4 @@
+import time
 from unittest.mock import patch
 
 import pytest
@@ -118,3 +119,34 @@ def test_patch_me_updates_name_and_avatar(client, fake_table):
     data = res.json()
     assert data["name"] == "New Name"
     assert data["avatar_url"] == "data:image/png;base64,xyz"
+
+
+# ── session expiry / sliding idle timeout ──────────────────────────────────
+
+
+def test_session_cookie_has_no_max_age(client, fake_table):
+    """Cookie must be a browser-session cookie so it clears when the browser closes."""
+    res = client.post("/api/auth/signup", json={"email": "a@b.com", "password": "supersecret", "name": "A"})
+    set_cookie_header = res.headers.get("set-cookie", "")
+    assert "max-age" not in set_cookie_header.lower()
+    assert "expires" not in set_cookie_header.lower()
+
+
+def test_session_expires_after_idle_timeout(client, fake_table):
+    with patch("app.auth.security.SESSION_IDLE_TIMEOUT_SECONDS", 1):
+        client.post("/api/auth/signup", json={"email": "a@b.com", "password": "supersecret", "name": "A"})
+        assert client.get("/api/auth/me").status_code == 200
+        time.sleep(1.5)
+        assert client.get("/api/auth/me").status_code == 401
+
+
+def test_activity_slides_session_expiry_forward(client, fake_table):
+    """Each authenticated request should refresh the session so continued
+    activity never hits the idle timeout."""
+    with patch("app.auth.security.SESSION_IDLE_TIMEOUT_SECONDS", 2):
+        client.post("/api/auth/signup", json={"email": "a@b.com", "password": "supersecret", "name": "A"})
+        for _ in range(3):
+            time.sleep(1)
+            assert client.get("/api/auth/me").status_code == 200
+        # still valid because each request above reset the idle window
+        assert client.get("/api/auth/me").status_code == 200

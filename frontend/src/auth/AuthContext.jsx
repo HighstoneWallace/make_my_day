@@ -1,11 +1,17 @@
-import { createContext, useCallback, useContext, useEffect, useState } from 'react'
+import { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react'
 import { api } from '../api.js'
 
 const AuthContext = createContext(null)
 
+// Mirrors the backend's SESSION_IDLE_TIMEOUT_SECONDS (app/auth/security.py) —
+// keep both in sync if either changes.
+const IDLE_TIMEOUT_MS = 30 * 60 * 1000
+const ACTIVITY_EVENTS = ['mousedown', 'mousemove', 'keydown', 'touchstart', 'scroll', 'wheel']
+
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null)
   const [loading, setLoading] = useState(true)
+  const idleTimer = useRef(null)
 
   useEffect(() => {
     api.auth
@@ -40,6 +46,26 @@ export function AuthProvider({ children }) {
     setUser(u)
     return u
   }, [])
+
+  // Auto-logout after a stretch of inactivity, independent of any API calls —
+  // otherwise a user idling on a page that never fetches would stay "logged
+  // in" in the UI even after the backend session has expired.
+  useEffect(() => {
+    if (!user) return
+
+    const resetIdleTimer = () => {
+      clearTimeout(idleTimer.current)
+      idleTimer.current = setTimeout(logout, IDLE_TIMEOUT_MS)
+    }
+
+    resetIdleTimer()
+    ACTIVITY_EVENTS.forEach((evt) => window.addEventListener(evt, resetIdleTimer))
+
+    return () => {
+      clearTimeout(idleTimer.current)
+      ACTIVITY_EVENTS.forEach((evt) => window.removeEventListener(evt, resetIdleTimer))
+    }
+  }, [user, logout])
 
   return (
     <AuthContext.Provider value={{ user, loading, login, signup, logout, updateProfile }}>

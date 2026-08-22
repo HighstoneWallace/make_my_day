@@ -70,7 +70,7 @@ export default function AuthModal({ open, initialMode = 'login', onClose }) {
           exit={{ opacity: 0 }}
         >
           <motion.div
-            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+            className="absolute inset-0 bg-black/30 backdrop-blur-sm"
             onClick={close}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -86,12 +86,12 @@ export default function AuthModal({ open, initialMode = 'login', onClose }) {
           >
             <button
               onClick={close}
-              className="absolute top-4 right-4 w-7 h-7 rounded-lg flex items-center justify-center text-[var(--text-3)] hover:text-white hover:bg-white/[0.06] transition-colors"
+              className="absolute top-4 right-4 w-7 h-7 rounded-lg flex items-center justify-center text-[var(--text-3)] hover:text-[var(--text-1)] hover:bg-[var(--surf-2)] transition-colors"
             >
               <X size={15} />
             </button>
 
-            <h2 className="text-[19px] font-bold tracking-tight text-white mb-1">
+            <h2 className="text-[19px] font-bold tracking-tight text-[var(--text-1)] mb-1">
               {mode === 'login' ? 'Welcome back' : 'Create your account'}
             </h2>
             <p className="text-[13px] text-[var(--text-2)] mb-6">
@@ -100,7 +100,7 @@ export default function AuthModal({ open, initialMode = 'login', onClose }) {
 
             <form onSubmit={submit} className="flex flex-col gap-3">
               {mode === 'signup' && (
-                <label className="flex items-center gap-2.5 bg-white/[0.06] border border-white/[0.08] rounded-lg px-3 py-2.5 focus-within:border-accent-400 transition-colors">
+                <label className="flex items-center gap-2.5 bg-[var(--surf-2)] border border-[var(--border)] rounded-lg px-3 py-2.5 focus-within:border-accent-400 transition-colors">
                   <User size={15} className="text-[var(--text-3)] shrink-0" />
                   <input
                     required
@@ -112,7 +112,7 @@ export default function AuthModal({ open, initialMode = 'login', onClose }) {
                 </label>
               )}
 
-              <label className="flex items-center gap-2.5 bg-white/[0.06] border border-white/[0.08] rounded-lg px-3 py-2.5 focus-within:border-accent-400 transition-colors">
+              <label className="flex items-center gap-2.5 bg-[var(--surf-2)] border border-[var(--border)] rounded-lg px-3 py-2.5 focus-within:border-accent-400 transition-colors">
                 <Mail size={15} className="text-[var(--text-3)] shrink-0" />
                 <input
                   required
@@ -125,7 +125,7 @@ export default function AuthModal({ open, initialMode = 'login', onClose }) {
                 />
               </label>
 
-              <label className="flex items-center gap-2.5 bg-white/[0.06] border border-white/[0.08] rounded-lg px-3 py-2.5 focus-within:border-accent-400 transition-colors">
+              <label className="flex items-center gap-2.5 bg-[var(--surf-2)] border border-[var(--border)] rounded-lg px-3 py-2.5 focus-within:border-accent-400 transition-colors">
                 <Lock size={15} className="text-[var(--text-3)] shrink-0" />
                 <input
                   required
@@ -144,7 +144,7 @@ export default function AuthModal({ open, initialMode = 'login', onClose }) {
               <button
                 type="submit"
                 disabled={submitting}
-                className="mt-1 w-full py-2.5 rounded-lg text-[14px] font-medium bg-accent-500 text-white hover:bg-accent-400 hover:shadow-glow-sm transition-all disabled:opacity-40"
+                className="mt-1 w-full py-2.5 rounded-lg text-[14px] font-medium bg-accent-500 text-white hover:bg-accent-400 transition-all disabled:opacity-40"
               >
                 {submitting ? 'Please wait…' : mode === 'login' ? 'Log in' : 'Sign up'}
               </button>

@@ -1,15 +1,10 @@
-import os
-
 from fastapi import APIRouter, Depends, HTTPException, Response
 from pydantic import BaseModel, field_validator
 
 from app.auth import service
-from app.auth.dependencies import SESSION_COOKIE_NAME, get_current_user
-from app.auth.security import SESSION_TTL_SECONDS, create_session_token
+from app.auth.dependencies import SESSION_COOKIE_NAME, get_current_user, set_session_cookie
 
 router = APIRouter(prefix="/api/auth")
-
-COOKIE_SECURE = os.getenv("ENV") == "production"
 
 
 def _validate_email(value: str) -> str:
@@ -45,18 +40,6 @@ class ProfileUpdate(BaseModel):
     avatar_url: str | None = None
 
 
-def _set_session_cookie(response: Response, user: dict) -> None:
-    token = create_session_token({"user_id": user["user_id"], "email": user["email"]})
-    response.set_cookie(
-        SESSION_COOKIE_NAME,
-        token,
-        max_age=SESSION_TTL_SECONDS,
-        httponly=True,
-        samesite="lax",
-        secure=COOKIE_SECURE,
-    )
-
-
 @router.post("/signup", status_code=201)
 def signup(body: SignupRequest, response: Response) -> dict:
     if len(body.password) < 8:
@@ -67,7 +50,7 @@ def signup(body: SignupRequest, response: Response) -> dict:
         user = service.create_user(body.email, body.password, body.name)
     except ValueError as e:
         raise HTTPException(status_code=409, detail=str(e))
-    _set_session_cookie(response, user)
+    set_session_cookie(response, user)
     return user
 
 
@@ -77,7 +60,7 @@ def login(body: LoginRequest, response: Response) -> dict:
         user = service.authenticate_user(body.email, body.password)
     except ValueError as e:
         raise HTTPException(status_code=401, detail=str(e))
-    _set_session_cookie(response, user)
+    set_session_cookie(response, user)
     return user
 
 

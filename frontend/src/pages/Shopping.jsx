@@ -20,22 +20,22 @@ function ShopRow({ item, onToggle, onDelete }) {
       initial={{ opacity: 0, y: 6 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, height: 0 }}
-      className="group flex items-center gap-3 py-3 border-b border-white/[0.06] last:border-b-0"
+      className="group flex items-center gap-3 py-3 border-b border-[var(--border)] last:border-b-0"
     >
       <button
         onClick={() => onToggle(item)}
         title={item.purchased ? 'Mark as pending' : 'Mark as purchased'}
         className={`w-6 h-6 rounded-lg border-[1.5px] flex items-center justify-center shrink-0 transition-all ${
           item.purchased
-            ? 'bg-emerald-500 border-transparent shadow-[0_0_10px_rgba(16,185,129,0.4)] text-white'
-            : 'border-white/20 hover:border-emerald-400 hover:bg-emerald-500/10'
+            ? 'bg-emerald-500 border-transparent text-white'
+            : 'border-[var(--border-2)] hover:border-emerald-400 hover:bg-emerald-500/10'
         }`}
       >
         {item.purchased && <Check size={13} />}
       </button>
 
       <div className="flex-1 min-w-0">
-        <div className={`text-[14px] font-medium truncate ${item.purchased ? 'line-through text-[var(--text-3)]' : 'text-white'}`}>
+        <div className={`text-[14px] font-medium truncate ${item.purchased ? 'line-through text-[var(--text-3)]' : 'text-[var(--text-1)]'}`}>
           {item.name}
         </div>
         {item.description && <div className="text-[11.5px] text-[var(--text-3)] mt-0.5 truncate">{item.description}</div>}
@@ -130,7 +130,7 @@ export default function Shopping() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.35 }}
       >
-        <h1 className="text-[26px] md:text-[28px] font-bold tracking-tight text-gradient mb-1.5">Shopping Wishlist</h1>
+        <h1 className="text-[26px] md:text-[28px] font-semibold tracking-normal font-serif mb-1.5">Shopping Wishlist</h1>
         <p className="text-[14px] text-[var(--text-2)]">Things worth saving up for</p>
       </motion.section>
 
@@ -166,26 +166,26 @@ export default function Shopping() {
           {!formOpen ? (
             <button
               onClick={() => setFormOpen(true)}
-              className="w-full py-2.5 rounded-xl border border-dashed border-white/[0.12] text-[var(--text-3)] text-[13px] flex items-center justify-center gap-1.5 hover:border-accent-400 hover:text-accent-400 hover:bg-accent-500/5 transition-all"
+              className="w-full py-2.5 rounded-xl border border-dashed border-[var(--border-2)] text-[var(--text-3)] text-[13px] flex items-center justify-center gap-1.5 hover:border-accent-400 hover:text-accent-400 hover:bg-accent-500/5 transition-all"
             >
               <Plus size={14} /> Add item
             </button>
           ) : (
-            <form onSubmit={addItem} className="flex flex-col gap-2.5 p-4 rounded-xl bg-white/[0.04] border border-white/[0.08]">
+            <form onSubmit={addItem} className="flex flex-col gap-2.5 p-4 rounded-xl bg-[var(--surf)] border border-[var(--border)]">
               <input
                 autoFocus
                 value={form.name}
                 onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
                 placeholder="Item name…"
                 maxLength={80}
-                className="bg-white/[0.06] border border-white/[0.08] rounded-lg px-3 py-2 text-[14px] outline-none focus:border-accent-400 placeholder:text-[var(--text-3)]"
+                className="bg-[var(--surf-2)] border border-[var(--border)] rounded-lg px-3 py-2 text-[14px] outline-none focus:border-accent-400 placeholder:text-[var(--text-3)]"
               />
               <input
                 value={form.description}
                 onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))}
                 placeholder="Description (optional)"
                 maxLength={200}
-                className="bg-white/[0.06] border border-white/[0.08] rounded-lg px-3 py-2 text-[14px] outline-none focus:border-accent-400 placeholder:text-[var(--text-3)]"
+                className="bg-[var(--surf-2)] border border-[var(--border)] rounded-lg px-3 py-2 text-[14px] outline-none focus:border-accent-400 placeholder:text-[var(--text-3)]"
               />
               <div className="flex flex-wrap gap-2 items-center">
                 <input
@@ -193,7 +193,7 @@ export default function Shopping() {
                   value={form.priceMin}
                   onChange={(e) => setForm((f) => ({ ...f, priceMin: e.target.value }))}
                   placeholder="Min €"
-                  className="w-24 bg-white/[0.06] border border-white/[0.08] rounded-lg px-2 py-2 text-[14px] outline-none focus:border-accent-400 placeholder:text-[var(--text-3)]"
+                  className="w-24 bg-[var(--surf-2)] border border-[var(--border)] rounded-lg px-2 py-2 text-[14px] outline-none focus:border-accent-400 placeholder:text-[var(--text-3)]"
                 />
                 <span className="text-[var(--text-3)] text-[13px]">–</span>
                 <input
@@ -201,25 +201,25 @@ export default function Shopping() {
                   value={form.priceMax}
                   onChange={(e) => setForm((f) => ({ ...f, priceMax: e.target.value }))}
                   placeholder="Max €"
-                  className="w-24 bg-white/[0.06] border border-white/[0.08] rounded-lg px-2 py-2 text-[14px] outline-none focus:border-accent-400 placeholder:text-[var(--text-3)]"
+                  className="w-24 bg-[var(--surf-2)] border border-[var(--border)] rounded-lg px-2 py-2 text-[14px] outline-none focus:border-accent-400 placeholder:text-[var(--text-3)]"
                 />
                 <input
                   value={form.url}
                   onChange={(e) => setForm((f) => ({ ...f, url: e.target.value }))}
                   placeholder="Link (optional)"
-                  className="flex-1 min-w-[120px] bg-white/[0.06] border border-white/[0.08] rounded-lg px-3 py-2 text-[14px] outline-none focus:border-accent-400 placeholder:text-[var(--text-3)]"
+                  className="flex-1 min-w-[120px] bg-[var(--surf-2)] border border-[var(--border)] rounded-lg px-3 py-2 text-[14px] outline-none focus:border-accent-400 placeholder:text-[var(--text-3)]"
                 />
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="px-4 py-2 rounded-lg text-[13px] font-medium bg-accent-500 text-white hover:bg-accent-400 hover:shadow-glow-sm transition-all disabled:opacity-40"
+                  className="px-4 py-2 rounded-lg text-[13px] font-medium bg-accent-500 text-white hover:bg-accent-400 transition-all disabled:opacity-40"
                 >
                   Add
                 </button>
                 <button
                   type="button"
                   onClick={() => setFormOpen(false)}
-                  className="w-9 h-9 rounded-lg flex items-center justify-center bg-white/[0.06] border border-white/[0.08] text-[var(--text-2)] hover:text-white transition-all"
+                  className="w-9 h-9 rounded-lg flex items-center justify-center bg-[var(--surf-2)] border border-[var(--border)] text-[var(--text-2)] hover:text-[var(--text-1)] transition-all"
                 >
                   <X size={14} />
                 </button>

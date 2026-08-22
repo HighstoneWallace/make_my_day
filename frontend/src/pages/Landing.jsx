@@ -25,7 +25,7 @@ function TopBar({ onLogin }) {
       <div className="flex justify-center">
         <button
           onClick={onLogin}
-          className="px-5 py-2 rounded-full text-[13.5px] font-medium glass hover:bg-white/[0.08] hover:border-white/20 transition-all"
+          className="px-5 py-2 rounded-full text-[13.5px] font-medium glass hover:bg-[var(--surf-3)] hover:border-[var(--border-2)] transition-all"
         >
           Log in
         </button>
@@ -44,13 +44,13 @@ function MiniTasksPreview() {
         { done: false, label: 'Review budget for August' },
       ].map((t) => (
         <div key={t.label} className="flex items-center gap-2.5">
-          <div className={`w-4 h-4 rounded-full border-[1.5px] flex items-center justify-center shrink-0 ${t.done ? 'bg-emerald-500 border-transparent' : 'border-white/20'}`}>
+          <div className={`w-4 h-4 rounded-full border-[1.5px] flex items-center justify-center shrink-0 ${t.done ? 'bg-emerald-500 border-transparent' : 'border-[var(--border-2)]'}`}>
             {t.done && <Check size={10} className="text-white" />}
           </div>
           <span className={`text-[12.5px] ${t.done ? 'line-through text-[var(--text-3)]' : 'text-[var(--text-2)]'}`}>{t.label}</span>
         </div>
       ))}
-      <div className="flex items-center gap-1.5 text-[11px] text-[var(--text-3)] mt-1 pt-2 border-t border-white/[0.06]">
+      <div className="flex items-center gap-1.5 text-[11px] text-[var(--text-3)] mt-1 pt-2 border-t border-[var(--border)]">
         <MapPin size={11} /> 2 events today
       </div>
     </div>
@@ -65,12 +65,12 @@ function MiniHabitsPreview() {
         <div className="w-7 h-7 rounded-lg bg-emerald-500 flex items-center justify-center shrink-0">
           <Check size={13} className="text-white" />
         </div>
-        <div className="text-[12.5px] text-white font-medium">Morning run</div>
+        <div className="text-[12.5px] text-[var(--text-1)] font-medium">Morning run</div>
         <div className="text-[11px] text-amber-400 font-semibold ml-auto">🔥 12d</div>
       </div>
       <div className="flex gap-1.5">
         {days.map((d, i) => (
-          <div key={i} className={`w-4 h-4 rounded-[5px] ${d ? 'bg-emerald-500' : 'bg-white/[0.06] border border-white/[0.1]'}`} />
+          <div key={i} className={`w-4 h-4 rounded-[5px] ${d ? 'bg-emerald-500' : 'bg-[var(--surf-2)] border border-[var(--border-2)]'}`} />
         ))}
       </div>
     </div>
@@ -99,11 +99,11 @@ function MiniShoppingPreview() {
 function MiniBudgetPreview() {
   return (
     <div className="grid grid-cols-2 gap-2.5">
-      <div className="rounded-lg bg-white/[0.04] border border-white/[0.06] p-2.5">
+      <div className="rounded-lg bg-[var(--surf)] border border-[var(--border)] p-2.5">
         <div className="text-[10px] text-[var(--text-3)] uppercase tracking-wide">Income</div>
         <div className="text-[15px] font-bold text-emerald-400">€3,200</div>
       </div>
-      <div className="rounded-lg bg-white/[0.04] border border-white/[0.06] p-2.5">
+      <div className="rounded-lg bg-[var(--surf)] border border-[var(--border)] p-2.5">
         <div className="text-[10px] text-[var(--text-3)] uppercase tracking-wide">Expenses</div>
         <div className="text-[15px] font-bold text-red-400">€2,140</div>
       </div>
@@ -141,8 +141,8 @@ function MiniNotesPreview() {
   return (
     <div className="flex flex-col gap-2">
       {['Trip packing list', 'Book recommendations'].map((t) => (
-        <div key={t} className="rounded-lg bg-white/[0.04] border border-white/[0.06] px-2.5 py-2">
-          <div className="text-[12.5px] text-white font-medium truncate">{t}</div>
+        <div key={t} className="rounded-lg bg-[var(--surf)] border border-[var(--border)] px-2.5 py-2">
+          <div className="text-[12.5px] text-[var(--text-1)] font-medium truncate">{t}</div>
         </div>
       ))}
     </div>
@@ -193,7 +193,7 @@ export default function Landing() {
           <div className="inline-flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider text-accent-400 bg-accent-500/10 border border-accent-500/20 rounded-full px-3 py-1 mb-5">
             <Sparkles size={12} /> Personal productivity, in one place
           </div>
-          <h1 className="text-[36px] md:text-[48px] font-bold tracking-tight text-gradient leading-[1.08] mb-4">
+          <h1 className="text-[36px] md:text-[48px] font-semibold tracking-normal font-serif leading-[1.08] mb-4">
             Make every day count.
           </h1>
           <p className="text-[15px] md:text-[16px] text-[var(--text-2)] leading-relaxed mb-8 max-w-lg mx-auto">
@@ -203,13 +203,13 @@ export default function Landing() {
           <div className="flex items-center justify-center gap-3">
             <button
               onClick={openSignup}
-              className="px-6 py-2.5 rounded-full text-[14px] font-medium bg-accent-500 text-white hover:bg-accent-400 hover:shadow-glow transition-all"
+              className="px-6 py-2.5 rounded-full text-[14px] font-medium bg-accent-500 text-white hover:bg-accent-400 transition-all"
             >
               Get started free
             </button>
             <button
               onClick={openLogin}
-              className="px-6 py-2.5 rounded-full text-[14px] font-medium glass hover:bg-white/[0.08] transition-all"
+              className="px-6 py-2.5 rounded-full text-[14px] font-medium glass hover:bg-[var(--surf-3)] transition-all"
             >
               Log in
             </button>
@@ -233,11 +233,11 @@ export default function Landing() {
                   <Icon size={16} className="text-accent-400" />
                 </div>
                 <div>
-                  <div className="text-[13.5px] font-semibold text-white">{title}</div>
+                  <div className="text-[13.5px] font-semibold text-[var(--text-1)]">{title}</div>
                   <div className="text-[11px] text-[var(--text-3)]">{desc}</div>
                 </div>
               </div>
-              <div className="rounded-xl bg-black/20 border border-white/[0.05] p-3.5">
+              <div className="rounded-xl bg-[var(--surf-3)] border border-[var(--border)] p-3.5">
                 <Preview />
               </div>
             </motion.div>

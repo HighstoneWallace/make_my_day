@@ -6,7 +6,9 @@ import os
 import time
 
 SESSION_SECRET = os.getenv("SESSION_SECRET", "dev-insecure-secret-change-me")
-SESSION_TTL_SECONDS = 60 * 60 * 24 * 30  # 30 days
+# How long a session stays valid without any authenticated request. Refreshed
+# (slid forward) on every request in get_current_user, so active use never expires.
+SESSION_IDLE_TIMEOUT_SECONDS = int(os.getenv("SESSION_IDLE_TIMEOUT_SECONDS", 60 * 30))
 PBKDF2_ITERATIONS = 260_000
 
 
@@ -30,7 +32,9 @@ def _sign(body: str) -> str:
     return hmac.new(SESSION_SECRET.encode(), body.encode(), hashlib.sha256).hexdigest()
 
 
-def create_session_token(payload: dict, ttl_seconds: int = SESSION_TTL_SECONDS) -> str:
+def create_session_token(payload: dict, ttl_seconds: int | None = None) -> str:
+    if ttl_seconds is None:
+        ttl_seconds = SESSION_IDLE_TIMEOUT_SECONDS
     full_payload = {**payload, "exp": int(time.time()) + ttl_seconds}
     body = base64.urlsafe_b64encode(json.dumps(full_payload).encode()).decode().rstrip("=")
     return f"{body}.{_sign(body)}"

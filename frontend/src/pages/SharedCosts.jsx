@@ -41,7 +41,7 @@ export default function SharedCosts() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.35 }}
       >
-        <h1 className="text-[26px] md:text-[28px] font-bold tracking-tight text-gradient mb-1.5">Shared Costs</h1>
+        <h1 className="text-[26px] md:text-[28px] font-semibold tracking-normal font-serif mb-1.5">Shared Costs</h1>
         <p className="text-[14px] text-[var(--text-2)]">
           Split group expenses and settle up automatically — skeleton page — mock data until the shared costs API ships
         </p>
@@ -54,7 +54,7 @@ export default function SharedCosts() {
           </div>
           <div>
             <div className="text-[11px] uppercase tracking-wide text-[var(--text-3)]">You're owed</div>
-            <div className="text-[19px] font-bold text-white">€{youAreOwed.toFixed(2)}</div>
+            <div className="text-[19px] font-bold text-[var(--text-1)]">€{youAreOwed.toFixed(2)}</div>
           </div>
         </GlassCard>
         <GlassCard className="flex items-center gap-3">
@@ -63,7 +63,7 @@ export default function SharedCosts() {
           </div>
           <div>
             <div className="text-[11px] uppercase tracking-wide text-[var(--text-3)]">You owe</div>
-            <div className="text-[19px] font-bold text-white">€{youOwe.toFixed(2)}</div>
+            <div className="text-[19px] font-bold text-[var(--text-1)]">€{youOwe.toFixed(2)}</div>
           </div>
         </GlassCard>
         <GlassCard className="flex items-center gap-3">
@@ -72,7 +72,7 @@ export default function SharedCosts() {
           </div>
           <div>
             <div className="text-[11px] uppercase tracking-wide text-[var(--text-3)]">Active groups</div>
-            <div className="text-[19px] font-bold text-white">{MOCK_GROUPS.length}</div>
+            <div className="text-[19px] font-bold text-[var(--text-1)]">{MOCK_GROUPS.length}</div>
           </div>
         </GlassCard>
       </div>
@@ -86,14 +86,14 @@ export default function SharedCosts() {
             {MOCK_GROUPS.map((g) => (
               <div
                 key={g.id}
-                className="flex items-center justify-between gap-3 rounded-xl bg-white/[0.04] border border-white/[0.06] px-3.5 py-3"
+                className="flex items-center justify-between gap-3 rounded-xl bg-[var(--surf)] border border-[var(--border)] px-3.5 py-3"
               >
                 <div className="flex items-center gap-3 min-w-0">
                   <div className="w-9 h-9 rounded-lg bg-accent-500/15 flex items-center justify-center shrink-0">
                     <Users size={15} className="text-accent-400" />
                   </div>
                   <div className="min-w-0">
-                    <div className="text-[13.5px] font-medium text-white truncate">{g.name}</div>
+                    <div className="text-[13.5px] font-medium text-[var(--text-1)] truncate">{g.name}</div>
                     <div className="text-[11.5px] text-[var(--text-3)]">{g.members} people</div>
                   </div>
                 </div>
@@ -102,7 +102,7 @@ export default function SharedCosts() {
             ))}
             <button
               disabled
-              className="mt-1 w-full py-2.5 rounded-lg text-[13px] font-medium border border-dashed border-white/[0.12] text-[var(--text-3)] cursor-not-allowed"
+              className="mt-1 w-full py-2.5 rounded-lg text-[13px] font-medium border border-dashed border-[var(--border-2)] text-[var(--text-3)] cursor-not-allowed"
               title="Coming soon"
             >
               + New group
@@ -116,10 +116,10 @@ export default function SharedCosts() {
           </div>
           <div className="flex flex-col">
             {MOCK_BALANCES.map((b) => (
-              <div key={b.id} className="flex items-center justify-between py-2.5 border-b border-white/[0.06] last:border-b-0">
+              <div key={b.id} className="flex items-center justify-between py-2.5 border-b border-[var(--border)] last:border-b-0">
                 <div className="flex items-center gap-2.5 min-w-0">
                   <AvatarCircle user={{ name: b.name }} size={26} />
-                  <span className="text-[13.5px] text-white truncate">{b.name}</span>
+                  <span className="text-[13.5px] text-[var(--text-1)] truncate">{b.name}</span>
                 </div>
                 <div className={`text-[13px] font-mono font-medium shrink-0 ${b.amount < 0 ? 'text-red-400' : 'text-emerald-400'}`}>
                   {fmtEur(b.amount)}
@@ -145,9 +145,9 @@ export default function SharedCosts() {
         </div>
         <div className="flex flex-col">
           {MOCK_EXPENSES.map((e) => (
-            <div key={e.id} className="flex items-center justify-between py-2.5 border-b border-white/[0.06] last:border-b-0">
+            <div key={e.id} className="flex items-center justify-between py-2.5 border-b border-[var(--border)] last:border-b-0">
               <div>
-                <div className="text-[14px] font-medium text-white">{e.label}</div>
+                <div className="text-[14px] font-medium text-[var(--text-1)]">{e.label}</div>
                 <div className="text-[11.5px] text-[var(--text-3)] mt-0.5">
                   {e.paidBy} paid · split {e.split} ways · {e.group} · {e.date}
                 </div>

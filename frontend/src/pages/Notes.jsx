@@ -19,7 +19,7 @@ export default function Notes() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.35 }}
       >
-        <h1 className="text-[26px] md:text-[28px] font-bold tracking-tight text-gradient mb-1.5">Notes</h1>
+        <h1 className="text-[26px] md:text-[28px] font-semibold tracking-normal font-serif mb-1.5">Notes</h1>
         <p className="text-[14px] text-[var(--text-2)]">Skeleton page — mock data until the notes API ships</p>
       </motion.section>
 
@@ -30,13 +30,13 @@ export default function Notes() {
               <StickyNote size={14} />
               <span className="text-[11px]">{n.updated}</span>
             </div>
-            <div className="text-[15px] font-semibold text-white">{n.title}</div>
+            <div className="text-[15px] font-semibold text-[var(--text-1)]">{n.title}</div>
             <div className="text-[13px] text-[var(--text-2)] line-clamp-2">{n.preview}</div>
           </GlassCard>
         ))}
 
         {/* TODO: wire up POST /api/notes once the backend endpoint exists */}
-        <button className="rounded-2xl border border-dashed border-white/[0.12] flex flex-col items-center justify-center gap-2 py-10 text-[var(--text-3)] hover:border-accent-400 hover:text-accent-400 hover:bg-accent-500/5 transition-all">
+        <button className="rounded-2xl border border-dashed border-[var(--border-2)] flex flex-col items-center justify-center gap-2 py-10 text-[var(--text-3)] hover:border-accent-400 hover:text-accent-400 hover:bg-accent-500/5 transition-all">
           <Plus size={20} />
           <span className="text-[13px] font-medium">New note</span>
         </button>

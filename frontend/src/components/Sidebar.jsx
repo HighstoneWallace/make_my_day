@@ -15,7 +15,7 @@ function todayLabel() {
 
 export default function Sidebar() {
   return (
-    <aside className="hidden md:flex flex-col w-60 shrink-0 h-screen sticky top-0 border-r border-white/[0.06] px-5 py-6">
+    <aside className="hidden md:flex flex-col w-60 shrink-0 h-screen sticky top-0 border-r border-[var(--border)] px-5 py-6">
       <img src={logo} alt="MakeMyDays" className="h-6 w-auto mb-6 ml-1" />
 
       <div className="mb-8">
@@ -30,7 +30,7 @@ export default function Sidebar() {
             end={end}
             className={({ isActive }) =>
               `relative flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors ${
-                isActive ? 'text-white' : 'text-[var(--text-2)] hover:text-white hover:bg-white/[0.04]'
+                isActive ? 'text-[var(--text-1)]' : 'text-[var(--text-2)] hover:text-[var(--text-1)] hover:bg-[var(--surf)]'
               }`
             }
           >
@@ -51,7 +51,7 @@ export default function Sidebar() {
         ))}
       </nav>
 
-      <div className="mt-auto pt-6 border-t border-white/[0.06] px-1">
+      <div className="mt-auto pt-6 border-t border-[var(--border)] px-1">
         <div className="text-[10px] uppercase tracking-wider text-[var(--text-3)] font-semibold mb-1">Today</div>
         <div className="text-[13px] text-[var(--text-2)] leading-snug">{todayLabel()}</div>
       </div>

@@ -41,11 +41,11 @@ export default function AccountMenu({ showChevron = false }) {
     <div className="relative" ref={rootRef}>
       <button
         onClick={() => setOpen((o) => !o)}
-        className="flex items-center gap-2.5 w-full px-1.5 py-1.5 rounded-xl hover:bg-white/[0.05] transition-colors text-left"
+        className="flex items-center gap-2.5 w-full px-1.5 py-1.5 rounded-xl hover:bg-[var(--surf)] transition-colors text-left"
       >
         <AvatarCircle user={user} size={32} />
         <span className="min-w-0 flex-1">
-          <span className="block text-[13.5px] font-semibold tracking-tight truncate text-white">{user.name}</span>
+          <span className="block text-[13.5px] font-semibold tracking-tight truncate text-[var(--text-1)]">{user.name}</span>
         </span>
         {showChevron && <ChevronDown size={14} className="text-[var(--text-3)] shrink-0" />}
       </button>
@@ -57,15 +57,15 @@ export default function AccountMenu({ showChevron = false }) {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -6, scale: 0.97 }}
             transition={{ duration: 0.15 }}
-            className="absolute left-0 top-[calc(100%+6px)] w-56 glass-strong rounded-xl p-1.5 shadow-2xl z-50"
+            className="absolute left-0 top-[calc(100%+6px)] w-56 glass-strong rounded-xl p-1.5 z-50"
           >
-            <div className="px-3 py-2 text-[12px] text-[var(--text-3)] truncate border-b border-white/[0.06] mb-1">
+            <div className="px-3 py-2 text-[12px] text-[var(--text-3)] truncate border-b border-[var(--border)] mb-1">
               {user.email}
             </div>
             <button
               onClick={() => fileRef.current?.click()}
               disabled={uploading}
-              className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-[13px] text-[var(--text-2)] hover:text-white hover:bg-white/[0.06] transition-colors disabled:opacity-50"
+              className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-[13px] text-[var(--text-2)] hover:text-[var(--text-1)] hover:bg-[var(--surf-2)] transition-colors disabled:opacity-50"
             >
               <Camera size={15} /> {uploading ? 'Uploading…' : 'Change photo'}
             </button>

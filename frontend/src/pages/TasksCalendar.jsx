@@ -11,10 +11,10 @@ import { dueInfo, eventDuration, eventStatus, fmtTime, greeting } from '../utils
 function TaskRow({ task }) {
   const due = dueInfo(task.due)
   return (
-    <div className="flex items-start gap-3 px-2 py-2.5 rounded-lg hover:bg-white/[0.04] transition-colors">
-      <div className="w-4 h-4 rounded-full border-[1.5px] border-white/20 mt-0.5 shrink-0" />
+    <div className="flex items-start gap-3 px-2 py-2.5 rounded-lg hover:bg-[var(--surf)] transition-colors">
+      <div className="w-4 h-4 rounded-full border-[1.5px] border-[var(--border-2)] mt-0.5 shrink-0" />
       <div className="flex-1 min-w-0">
-        <div className="text-[13.5px] font-medium text-white leading-snug">{task.title}</div>
+        <div className="text-[13.5px] font-medium text-[var(--text-1)] leading-snug">{task.title}</div>
         {task.notes && (
           <div className="text-[11.5px] text-[var(--text-3)] mt-0.5 truncate">{task.notes.split('\n')[0]}</div>
         )}
@@ -53,7 +53,7 @@ function TasksList({ tasks }) {
     <div className="max-h-[380px] overflow-y-auto pr-1 flex flex-col gap-4">
       {Object.entries(groups).map(([list, items]) => (
         <div key={list}>
-          <div className="text-[10px] font-semibold uppercase tracking-wider text-[var(--text-3)] pb-2 mb-0.5 border-b border-white/[0.06]">
+          <div className="text-[10px] font-semibold uppercase tracking-wider text-[var(--text-3)] pb-2 mb-0.5 border-b border-[var(--border)]">
             {list}
           </div>
           {items.map((t) => (
@@ -77,9 +77,9 @@ function EventsTimeline({ events }) {
   return (
     <div className="max-h-[380px] overflow-y-auto pr-1">
       {allDay.length > 0 && (
-        <div className="flex flex-col gap-1.5 mb-3.5 pb-3.5 border-b border-white/[0.06]">
+        <div className="flex flex-col gap-1.5 mb-3.5 pb-3.5 border-b border-[var(--border)]">
           {allDay.map((e) => (
-            <div key={e.id ?? e.title} className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg bg-white/[0.04] text-[13px] font-medium text-[var(--text-2)]">
+            <div key={e.id ?? e.title} className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg bg-[var(--surf)] text-[13px] font-medium text-[var(--text-2)]">
               <span className="w-1.5 h-1.5 rounded-full bg-accent-400 shrink-0" />
               <span className="flex-1 truncate">{e.title}</span>
               <Badge tone="muted">All day</Badge>
@@ -110,16 +110,16 @@ function EventsTimeline({ events }) {
                   {startFmt || ''}
                 </div>
                 <div className="flex flex-col items-center pt-1.5">
-                  <div className={`w-[7px] h-[7px] rounded-full shrink-0 ${status === 'ongoing' ? 'bg-emerald-400 shadow-[0_0_8px_rgba(16,185,129,0.5)]' : 'bg-[var(--text-3)]'} ${status === 'past' ? 'opacity-40' : ''}`} />
-                  {!isLast && <div className="w-px flex-1 bg-white/[0.08] mt-1 -mb-0.5" />}
+                  <div className={`w-[7px] h-[7px] rounded-full shrink-0 ${status === 'ongoing' ? 'bg-emerald-400' : 'bg-[var(--text-3)]'} ${status === 'past' ? 'opacity-40' : ''}`} />
+                  {!isLast && <div className="w-px flex-1 bg-[var(--surf-3)] mt-1 -mb-0.5" />}
                 </div>
                 <div className={`rounded-lg border px-3 py-1.5 my-0.5 mb-1.5 transition-colors ${
                   status === 'ongoing'
                     ? 'border-emerald-500/30 bg-emerald-500/[0.07]'
-                    : 'border-white/[0.08] bg-white/[0.04]'
+                    : 'border-[var(--border)] bg-[var(--surf)]'
                 } ${status === 'past' ? 'opacity-45' : ''}`}>
                   <div className="flex items-center gap-2 flex-wrap">
-                    <span className="text-[13px] font-medium text-white">{e.title}</span>
+                    <span className="text-[13px] font-medium text-[var(--text-1)]">{e.title}</span>
                     {status === 'ongoing' && <Badge tone="green" dot>Live</Badge>}
                   </div>
                   {(startFmt || e.location) && (
@@ -197,7 +197,7 @@ export default function TasksCalendar() {
         transition={{ duration: 0.35 }}
       >
         <div className="flex-1 min-w-0">
-          <h1 className="text-[30px] md:text-[34px] font-bold tracking-tight text-gradient leading-tight mb-1.5">
+          <h1 className="text-[30px] md:text-[34px] font-semibold tracking-normal font-serif leading-tight mb-1.5">
             {greeting()}
           </h1>
           <p className="text-[14px] text-[var(--text-2)] mb-6">Here's your daily overview</p>
@@ -232,14 +232,14 @@ export default function TasksCalendar() {
           <button
             onClick={fetchAudio}
             disabled={audioLoading}
-            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-[13px] font-medium bg-accent-500 text-white hover:bg-accent-400 hover:shadow-glow-sm transition-all disabled:opacity-40"
+            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-[13px] font-medium bg-accent-500 text-white hover:bg-accent-400 transition-all disabled:opacity-40"
           >
             <Headphones size={14} /> {audioLoading ? 'Generating…' : 'Listen'}
           </button>
           <button
             onClick={loadBriefing}
             disabled={briefingLoading}
-            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-[13px] font-medium bg-white/[0.06] border border-white/[0.08] text-[var(--text-2)] hover:bg-white/[0.1] hover:text-white transition-all disabled:opacity-40"
+            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-[13px] font-medium bg-[var(--surf-2)] border border-[var(--border)] text-[var(--text-2)] hover:bg-[var(--surf-3)] hover:text-[var(--text-1)] transition-all disabled:opacity-40"
           >
             <RefreshCw size={14} /> Refresh
           </button>

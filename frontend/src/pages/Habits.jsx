@@ -19,10 +19,10 @@ function CompletionRing({ done, total }) {
   return (
     <div className="relative w-28 h-28 shrink-0">
       <svg width="112" height="112" viewBox="0 0 112 112" className="-rotate-90">
-        <circle cx="56" cy="56" r={RING_R} fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="7" />
+        <circle cx="56" cy="56" r={RING_R} fill="none" stroke="#E2DDD5" strokeWidth="7" />
         <motion.circle
           cx="56" cy="56" r={RING_R} fill="none"
-          stroke={pct >= 1 ? '#34d399' : '#5b8def'}
+          stroke={pct >= 1 ? '#1F4035' : '#C8622A'}
           strokeWidth="7" strokeLinecap="round"
           strokeDasharray={RING_C}
           initial={{ strokeDashoffset: RING_C }}
@@ -49,21 +49,21 @@ function HabitRow({ habit, days, today, onToggle, onDelete }) {
       initial={{ opacity: 0, y: 6 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, height: 0 }}
-      className="group grid grid-cols-[1fr_auto] items-center gap-4 py-3 border-b border-white/[0.06] last:border-b-0"
+      className="group grid grid-cols-[1fr_auto] items-center gap-4 py-3 border-b border-[var(--border)] last:border-b-0"
     >
       <div className="flex items-center gap-3 min-w-0">
         <button
           onClick={() => onToggle(habit)}
           className={`w-9 h-9 rounded-xl border-[1.5px] flex items-center justify-center text-base shrink-0 transition-all ${
             done
-              ? 'bg-emerald-500 border-transparent shadow-[0_0_14px_rgba(16,185,129,0.4)]'
-              : 'border-white/20 hover:border-accent-400 hover:bg-accent-500/10 hover:scale-105'
+              ? 'bg-emerald-500 border-transparent'
+              : 'border-[var(--border-2)] hover:border-accent-400 hover:bg-accent-500/10 hover:scale-105'
           }`}
         >
           {done ? <Check size={16} className="text-white" /> : habit.emoji}
         </button>
         <div className="min-w-0">
-          <div className={`text-[14px] font-medium truncate ${done ? 'line-through text-[var(--text-3)]' : 'text-white'}`}>
+          <div className={`text-[14px] font-medium truncate ${done ? 'line-through text-[var(--text-3)]' : 'text-[var(--text-1)]'}`}>
             {habit.name}
           </div>
           <div className="text-[11px] text-[var(--text-3)] mt-0.5">
@@ -89,7 +89,7 @@ function HabitRow({ habit, days, today, onToggle, onDelete }) {
               <div
                 key={ds}
                 className={`w-5 h-5 rounded-md border transition-all ${
-                  dn ? 'bg-emerald-500 border-transparent shadow-[0_0_6px_rgba(16,185,129,0.4)]' : 'bg-white/[0.03] border-white/[0.08]'
+                  dn ? 'bg-emerald-500 border-transparent' : 'bg-[var(--surf)] border-[var(--border)]'
                 } ${isToday && !dn ? 'border-accent-400 border-[1.5px]' : ''}`}
                 title={ds}
               />
@@ -186,7 +186,7 @@ export default function Habits() {
         transition={{ duration: 0.35 }}
       >
         <div className="flex-1 min-w-0">
-          <h1 className="text-[26px] md:text-[28px] font-bold tracking-tight text-gradient mb-1.5">Habits</h1>
+          <h1 className="text-[26px] md:text-[28px] font-semibold tracking-normal font-serif mb-1.5">Habits</h1>
           <p className="text-[14px] text-[var(--text-2)]">Build momentum, one day at a time</p>
         </div>
         <CompletionRing done={doneToday} total={total} />
@@ -226,7 +226,7 @@ export default function Habits() {
           {!formOpen ? (
             <button
               onClick={() => setFormOpen(true)}
-              className="w-full py-2.5 rounded-xl border border-dashed border-white/[0.12] text-[var(--text-3)] text-[13px] flex items-center justify-center gap-1.5 hover:border-accent-400 hover:text-accent-400 hover:bg-accent-500/5 transition-all"
+              className="w-full py-2.5 rounded-xl border border-dashed border-[var(--border-2)] text-[var(--text-3)] text-[13px] flex items-center justify-center gap-1.5 hover:border-accent-400 hover:text-accent-400 hover:bg-accent-500/5 transition-all"
             >
               <Plus size={14} /> Add habit
             </button>
@@ -236,7 +236,7 @@ export default function Habits() {
                 value={emoji}
                 onChange={(e) => setEmoji(e.target.value)}
                 maxLength={2}
-                className="w-12 text-center text-lg bg-white/[0.06] border border-white/[0.08] rounded-lg px-2 py-2 outline-none focus:border-accent-400"
+                className="w-12 text-center text-lg bg-[var(--surf-2)] border border-[var(--border)] rounded-lg px-2 py-2 outline-none focus:border-accent-400"
                 title="Pick an emoji"
               />
               <input
@@ -245,7 +245,7 @@ export default function Habits() {
                 onChange={(e) => setName(e.target.value)}
                 placeholder="Habit name…"
                 maxLength={40}
-                className="flex-1 min-w-[140px] bg-white/[0.06] border border-white/[0.08] rounded-lg px-3 py-2 text-[14px] outline-none focus:border-accent-400 placeholder:text-[var(--text-3)]"
+                className="flex-1 min-w-[140px] bg-[var(--surf-2)] border border-[var(--border)] rounded-lg px-3 py-2 text-[14px] outline-none focus:border-accent-400 placeholder:text-[var(--text-3)]"
               />
               <input
                 type="number"
@@ -254,19 +254,19 @@ export default function Habits() {
                 value={goal}
                 onChange={(e) => setGoal(e.target.value)}
                 title="Goal streak (days)"
-                className="w-[72px] bg-white/[0.06] border border-white/[0.08] rounded-lg px-2 py-2 text-[14px] outline-none focus:border-accent-400"
+                className="w-[72px] bg-[var(--surf-2)] border border-[var(--border)] rounded-lg px-2 py-2 text-[14px] outline-none focus:border-accent-400"
               />
               <button
                 type="submit"
                 disabled={submitting}
-                className="px-4 py-2 rounded-lg text-[13px] font-medium bg-accent-500 text-white hover:bg-accent-400 hover:shadow-glow-sm transition-all disabled:opacity-40"
+                className="px-4 py-2 rounded-lg text-[13px] font-medium bg-accent-500 text-white hover:bg-accent-400 transition-all disabled:opacity-40"
               >
                 Add
               </button>
               <button
                 type="button"
                 onClick={() => setFormOpen(false)}
-                className="w-9 h-9 rounded-lg flex items-center justify-center bg-white/[0.06] border border-white/[0.08] text-[var(--text-2)] hover:text-white transition-all"
+                className="w-9 h-9 rounded-lg flex items-center justify-center bg-[var(--surf-2)] border border-[var(--border)] text-[var(--text-2)] hover:text-[var(--text-1)] transition-all"
               >
                 <X size={14} />
               </button>

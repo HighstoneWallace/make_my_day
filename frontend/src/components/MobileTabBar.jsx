@@ -3,7 +3,7 @@ import { NAV_ITEMS } from '../nav.js'
 
 export default function MobileTabBar() {
   return (
-    <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40 glass-strong border-t border-white/[0.08] px-1 pb-[env(safe-area-inset-bottom)]">
+    <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40 glass-strong border-t border-[var(--border)] px-1 pb-[env(safe-area-inset-bottom)]">
       <div className="flex items-stretch justify-between">
         {NAV_ITEMS.map(({ to, label, icon: Icon, end }) => (
           <NavLink

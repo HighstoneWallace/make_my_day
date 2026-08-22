@@ -28,7 +28,7 @@ export default function Budget() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.35 }}
       >
-        <h1 className="text-[26px] md:text-[28px] font-bold tracking-tight text-gradient mb-1.5">Budget</h1>
+        <h1 className="text-[26px] md:text-[28px] font-semibold tracking-normal font-serif mb-1.5">Budget</h1>
         <p className="text-[14px] text-[var(--text-2)]">Skeleton page — mock data until the budget API ships</p>
       </motion.section>
 
@@ -39,7 +39,7 @@ export default function Budget() {
           </div>
           <div>
             <div className="text-[11px] uppercase tracking-wide text-[var(--text-3)]">Income</div>
-            <div className="text-[19px] font-bold text-white">€{MOCK_SUMMARY.income.toLocaleString()}</div>
+            <div className="text-[19px] font-bold text-[var(--text-1)]">€{MOCK_SUMMARY.income.toLocaleString()}</div>
           </div>
         </GlassCard>
         <GlassCard className="flex items-center gap-3">
@@ -48,7 +48,7 @@ export default function Budget() {
           </div>
           <div>
             <div className="text-[11px] uppercase tracking-wide text-[var(--text-3)]">Expenses</div>
-            <div className="text-[19px] font-bold text-white">€{MOCK_SUMMARY.expenses.toLocaleString()}</div>
+            <div className="text-[19px] font-bold text-[var(--text-1)]">€{MOCK_SUMMARY.expenses.toLocaleString()}</div>
           </div>
         </GlassCard>
         <GlassCard className="flex items-center gap-3">
@@ -57,7 +57,7 @@ export default function Budget() {
           </div>
           <div>
             <div className="text-[11px] uppercase tracking-wide text-[var(--text-3)]">Balance</div>
-            <div className="text-[19px] font-bold text-white">€{MOCK_SUMMARY.balance.toLocaleString()}</div>
+            <div className="text-[19px] font-bold text-[var(--text-1)]">€{MOCK_SUMMARY.balance.toLocaleString()}</div>
           </div>
         </GlassCard>
       </div>
@@ -68,9 +68,9 @@ export default function Budget() {
         </div>
         <div className="flex flex-col">
           {MOCK_TRANSACTIONS.map((t) => (
-            <div key={t.id} className="flex items-center justify-between py-2.5 border-b border-white/[0.06] last:border-b-0">
+            <div key={t.id} className="flex items-center justify-between py-2.5 border-b border-[var(--border)] last:border-b-0">
               <div>
-                <div className="text-[14px] font-medium text-white">{t.label}</div>
+                <div className="text-[14px] font-medium text-[var(--text-1)]">{t.label}</div>
                 <div className="text-[11.5px] text-[var(--text-3)] mt-0.5">{t.category} · {t.date}</div>
               </div>
               <div className={`text-[13px] font-mono font-medium ${t.amount < 0 ? 'text-red-400' : 'text-emerald-400'}`}>
